@@ -44,7 +44,7 @@ namespace SharperUniverse.Core
 
         public async Task RunGameAsync()
         {
-            Task<(string commandName, List<string> args)> inputTask = Task.Run(() => _ioHandler.GetInputAsync()); //debugger stops working here, and nothing gets output when example command is ran
+            Task<(string commandName, List<string> args)> inputTask = Task.Run(() => _ioHandler.GetInputAsync());
             Func<string, Task> outputDel = _ioHandler.SendOutputAsync;
             while (true)
             {
@@ -55,13 +55,14 @@ namespace SharperUniverse.Core
                 }
                 else if (inputTask.IsFaulted)
                 {
-                    throw inputTask.Exception;
+                    var exception = inputTask.Exception ?? new Exception("REEEEEEEEEEEEEEEEEEE WTF DID YOU DO TO MY POOR ENGINE???");
+                    throw exception;
                 }
                 foreach (var sharperSystem in _systems)
                 {
                     await sharperSystem.CycleUpdateAsync(outputDel);
                 }
-                await Task.Delay(100);
+                await Task.Delay(50);
             }
         }
     }

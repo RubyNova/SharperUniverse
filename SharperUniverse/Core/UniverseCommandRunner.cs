@@ -27,7 +27,9 @@ namespace SharperUniverse.Core
 
         public async Task AttemptExecuteAsync(string command, List<string> args)
         {
-            await _bindings.FirstOrDefault(x => x.CommandName.ToUpper() == command.ToUpper())?.ProcessCommandAsync(args);
+            var bla = _bindings.FirstOrDefault(x => x.CommandName.ToUpper() == command.ToUpper());
+            if (bla == null) return;
+            await bla.ProcessCommandAsync(args);
         }
     }
 }

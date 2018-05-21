@@ -14,8 +14,15 @@ namespace ExampleECSUsageConsole
         {
             var inputStr = await Console.In.ReadLineAsync();
             var inputSplit = inputStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var returnList = inputSplit.SubArray(1, inputSplit.Length - 1);
-            return (inputSplit[0], returnList.ToList());
+            if (inputSplit.Length >= 1)
+            {
+                var returnList = inputSplit.SubArray(1, inputSplit.Length - 1);
+                return (inputSplit[0], returnList.ToList());
+            }
+            else
+            {
+                return ("", new List<string>());
+            }
         }
 
         public async Task SendOutputAsync(string outputText)

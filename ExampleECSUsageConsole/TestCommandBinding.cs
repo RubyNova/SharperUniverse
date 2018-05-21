@@ -8,8 +8,8 @@ namespace ExampleECSUsageConsole
 {
     class TestCommandBinding : IUniverseCommandBinding
     {
-        private IIOHandler _ioHandler;
-        private TestSystem _system;
+        private readonly IIOHandler _ioHandler;
+        private readonly TestSystem _system;
         public string CommandName { get; }
 
         public TestCommandBinding(string commandName, TestSystem system, IIOHandler ioHandler)

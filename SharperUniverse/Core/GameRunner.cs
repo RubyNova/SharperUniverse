@@ -44,14 +44,14 @@ namespace SharperUniverse.Core
 
         public async Task RunGameAsync()
         {
-            Task<(string commandName, List<string> args)> inputTask = _ioHandler.GetInputAsync(); //debugger stops working here, and nothing gets output when example command is ran
+            Task<(string commandName, List<string> args)> inputTask = Task.Run(() => _ioHandler.GetInputAsync()); //debugger stops working here, and nothing gets output when example command is ran
             Func<string, Task> outputDel = _ioHandler.SendOutputAsync;
             while (true)
             {
                 if (inputTask.IsCompleted)
                 {
                     await _commandRunner.AttemptExecuteAsync(inputTask.Result.commandName, inputTask.Result.args);
-                    inputTask = _ioHandler.GetInputAsync();
+                    inputTask = Task.Run(() => _ioHandler.GetInputAsync());
                 }
                 else if (inputTask.IsFaulted)
                 {

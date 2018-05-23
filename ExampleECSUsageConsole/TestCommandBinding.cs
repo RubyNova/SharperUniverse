@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharperUniverse.Core;
 
@@ -8,20 +6,25 @@ namespace ExampleECSUsageConsole
 {
     class TestCommandBinding : IUniverseCommandBinding
     {
-        private readonly IIOHandler _ioHandler;
-        private readonly TestSystem _system;
+        private IIOHandler _ioHandler;
+        private TestSystem _system;
         public string CommandName { get; }
 
-        public TestCommandBinding(string commandName, TestSystem system, IIOHandler ioHandler)
+        public TestCommandBinding(string commandName)
         {
             CommandName = commandName;
+        }
+
+        [SharperInject]
+        private void InitializeCommandRequirements(IIOHandler ioHandler, TestSystem system)
+        {
             _ioHandler = ioHandler;
             _system = system;
         }
 
         public async Task ProcessCommandAsync(List<string> args)
         {
-            if (int.TryParse(args[0], out var intResult) && bool.TryParse(args[1], out var boolResult))
+            if (args.Count >= 2 && int.TryParse(args[0], out var intResult) && bool.TryParse(args[1], out var boolResult))
             {
                 await ExecuteCommandAsync(intResult, boolResult);
             }

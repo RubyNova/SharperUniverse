@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharperUniverse.Core;
 
-namespace ExampleECSUsageConsole
+namespace SharperUniverse.Tests
 {
     class TestSystem : BaseSharperSystem<TestComponent>
     {
         private readonly Dictionary<TestComponent, bool> _prevStates;
+        private float _updateTime;
+        private EmptySystem _system;
 
         public TestSystem(GameRunner game) : base(game)
         {
@@ -16,16 +18,25 @@ namespace ExampleECSUsageConsole
             ComponentRemoved += OnComponentRemoved;
         }
 
-        public override async Task CycleUpdateAsync(Func<string, Task> outputHandler)
+        [SharperInject]
+        private void InjectSharperSystems(EmptySystem emptySys)
         {
-            foreach (var comp in Components)
+            _system = emptySys;
+        }
+
+        public override Task CycleUpdateAsync(Func<string, Task> outputHandler)
+        {
+            _system.TestSwitch = true;
+            if (_updateTime > 1000f)
             {
-                if (comp.State !=_prevStates[comp])
+                foreach (var comp in Components)
                 {
-                    await outputHandler.Invoke($"state is now {comp.State}");
+                    comp.State = !comp.State;
                 }
-                _prevStates[comp] = comp.State;
+                _updateTime = 0f;
             }
+            _updateTime += 50f;
+            return Task.CompletedTask;
         }
 
         private void OnComponentRemoved(object sender, SharperComponentEventArgs e)

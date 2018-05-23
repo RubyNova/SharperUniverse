@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SharperUniverse.Core
 {
-    public class SharperEntity
+    public sealed class SharperEntity
     {
         public List<BaseSharperComponent> Components { get; }
 

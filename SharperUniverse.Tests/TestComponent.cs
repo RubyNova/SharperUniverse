@@ -1,6 +1,6 @@
 ﻿using SharperUniverse.Core;
 
-namespace ExampleECSUsageConsole
+namespace SharperUniverse.Tests
 {
     class TestComponent : BaseSharperComponent
     {

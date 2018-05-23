@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SharperUniverse.Core;
 using SharperUniverse.Utilities;
@@ -14,15 +13,15 @@ namespace ExampleECSUsageConsole
         {
             var inputStr = await Console.In.ReadLineAsync();
             var inputSplit = inputStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (inputSplit.Length >= 1)
+            if (inputSplit.Length >= 2)
             {
                 var returnList = inputSplit.SubArray(1, inputSplit.Length - 1);
                 return (inputSplit[0], returnList.ToList());
             }
-            else
-            {
-                return ("", new List<string>());
-            }
+
+            if (inputSplit.Length > 1 && inputSplit[0] != string.Empty) return (inputSplit[0], new List<string>());
+
+            return ("", new List<string>());
         }
 
         public async Task SendOutputAsync(string outputText)

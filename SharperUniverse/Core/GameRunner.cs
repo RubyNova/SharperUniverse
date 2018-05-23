@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
+using SharperUniverse.Utilities;
 
 namespace SharperUniverse.Core
 {
@@ -23,16 +24,9 @@ namespace SharperUniverse.Core
 
         public void RegisterSystem(ISharperSystem<BaseSharperComponent> system)
         {
-            if (_systems.Contains(system)) throw new DuplicateSharperObjectException();
+            if (_systems.Contains(system) || _systems.Any(x => x.GetType() == system.GetType())) throw new DuplicateSharperObjectException();
 
             _systems.Add(system);
-        }
-
-        public void RegisterSystems(params ISharperSystem<BaseSharperComponent>[] systems)
-        {
-            if (_systems.Any(x => systems.Contains(x))) throw new DuplicateSharperObjectException();
-
-            _systems.AddRange(systems);
         }
 
         public Task<SharperEntity> CreateEntityAsync()
@@ -44,6 +38,8 @@ namespace SharperUniverse.Core
 
         public async Task RunGameAsync()
         {
+            _commandRunner.ComposeCommands(_ioHandler, _systems);
+            ComposeSystems();
             Task<(string commandName, List<string> args)> inputTask = Task.Run(() => _ioHandler.GetInputAsync());
             Func<string, Task> outputDel = _ioHandler.SendOutputAsync;
             while (true)
@@ -63,6 +59,29 @@ namespace SharperUniverse.Core
                     await sharperSystem.CycleUpdateAsync(outputDel);
                 }
                 await Task.Delay(50);
+            }
+        }
+
+        private void ComposeSystems()
+        {
+            foreach (var sharperSystem in _systems)
+            {
+                var sysType = sharperSystem.GetType();
+                var method = sysType.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                    .FirstOrDefault(x => x.GetCustomAttribute<SharperInjectAttribute>() != null);
+
+                if (method == null) continue;
+
+                var parameters = method.GetParameters();
+
+                if (parameters.Any(x => !typeof(BaseSharperSystem<>).IsSubclassOfRawGeneric(x.ParameterType))) throw new NotSupportedException($"One or more parameters in type {sharperSystem.GetType().Name} are not BaseSharperSystems. This is not supported. Please pass in any dependencies that aren't systems via the constructor.");
+
+                var systems = new List<object>();
+                foreach (var parameterInfo in parameters)
+                {
+                    systems.Add(_systems.First(x => x.GetType() == parameterInfo.ParameterType));
+                }
+                method.Invoke(sharperSystem, systems.ToArray());
             }
         }
     }

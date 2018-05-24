@@ -1,14 +1,11 @@
 language: csharp
 solution: SharperUniverse.sln
+mono: none
+dotnet: 2.1.200
+
 install:
     - nuget restore SharperUniverse.sln
     - nuget install NUnit.Runners -Version 3.8.0 -OutputDirectory testrunner
 script:
-    - xbuild /p:Configuration=Release SharperUniverse.sln
-    - mono ./testrunner/NUnit.Runners.3.8.0/tools/nunit-console.exe ./SharperUniverse.Tests/bin/Release/SharperUniverse.Tests/bin/Release/SharperUniverse.Tests.dll
-
-# matrix:
-    # include:
-        # - dotnet: 2.1.200
-          # mono: none
-        # - mono: latest
+    - dotnet restore
+    - dotnet ./SharperUniverse.Tests.csproj

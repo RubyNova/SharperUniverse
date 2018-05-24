@@ -1,5 +1,7 @@
 # SharperUniverse
 
+[![Build Status](https://travis-ci.org/RubyNova/SharperUniverse.svg?branch=master)](https://travis-ci.org/RubyNova/SharperUniverse)
+
 A custom text-controlled adventure/text-controlled RPG/MUD engine for .NET so straightforward that even a monkey could use it.
 
 ## About

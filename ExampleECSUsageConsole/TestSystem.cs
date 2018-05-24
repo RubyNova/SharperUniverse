@@ -12,8 +12,8 @@ namespace ExampleECSUsageConsole
         public TestSystem(GameRunner game) : base(game)
         {
             _prevStates = new Dictionary<TestComponent, bool>();
-            ComponentAdded += OnComponentAdded;
-            ComponentRemoved += OnComponentRemoved;
+            ComponentRegistered += OnComponentRegistered;
+            ComponentUnRegistered += OnComponentUnRegistered;
         }
 
         public override async Task CycleUpdateAsync(Func<string, Task> outputHandler)
@@ -28,14 +28,14 @@ namespace ExampleECSUsageConsole
             }
         }
 
-        private void OnComponentRemoved(object sender, SharperComponentEventArgs e)
+        private void OnComponentUnRegistered(object sender, SharperComponentEventArgs e)
         {
-            _prevStates.Remove((TestComponent)e.BaseSharperComponent);
+            _prevStates.Remove((TestComponent)e.SharperComponent);
         }
 
-        private void OnComponentAdded(object sender, SharperComponentEventArgs e)
+        private void OnComponentRegistered(object sender, SharperComponentEventArgs e)
         {
-            var comp = (TestComponent)e.BaseSharperComponent;
+            var comp = (TestComponent)e.SharperComponent;
             _prevStates.Add(comp, comp.State);
         }
     }

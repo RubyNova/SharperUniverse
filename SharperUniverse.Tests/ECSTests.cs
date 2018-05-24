@@ -31,7 +31,7 @@ namespace SharperUniverse.Tests
             });
 
             _commandRunner = new UniverseCommandRunner();
-            _gameRunner = new GameRunner(_commandRunner, _ioMock);
+            _gameRunner = new GameRunner(_commandRunner, _ioMock, 50);
         }
 
         [TearDown]

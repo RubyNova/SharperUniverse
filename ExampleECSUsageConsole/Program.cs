@@ -9,7 +9,7 @@ namespace ExampleECSUsageConsole
         {
             var commandRunner = new UniverseCommandRunner();
             commandRunner.AddCommandBinding(new TestCommandBinding("switch"));
-            var runner = new GameRunner(commandRunner, new ConsoleIOHandler());
+            var runner = new GameRunner(commandRunner, new ConsoleIOHandler(), 50);
             var system = new TestSystem(runner);
             var ent = await runner.CreateEntityAsync();
             await system.RegisterComponentAsync(ent, true);

@@ -14,8 +14,8 @@ namespace SharperUniverse.Tests
         public TestSystem(GameRunner game) : base(game)
         {
             _prevStates = new Dictionary<TestComponent, bool>();
-            ComponentAdded += OnComponentAdded;
-            ComponentRemoved += OnComponentRemoved;
+            ComponentRegistered += OnComponentRegistered;
+            ComponentUnRegistered += OnComponentUnRegistered;
         }
 
         [SharperInject]
@@ -39,14 +39,14 @@ namespace SharperUniverse.Tests
             return Task.CompletedTask;
         }
 
-        private void OnComponentRemoved(object sender, SharperComponentEventArgs e)
+        private void OnComponentUnRegistered(object sender, SharperComponentEventArgs e)
         {
-            _prevStates.Remove((TestComponent)e.BaseSharperComponent);
+            _prevStates.Remove((TestComponent)e.SharperComponent);
         }
 
-        private void OnComponentAdded(object sender, SharperComponentEventArgs e)
+        private void OnComponentRegistered(object sender, SharperComponentEventArgs e)
         {
-            var comp = (TestComponent)e.BaseSharperComponent;
+            var comp = (TestComponent)e.SharperComponent;
             _prevStates.Add(comp, comp.State);
         }
     }

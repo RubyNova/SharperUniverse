@@ -3,9 +3,6 @@ solution: SharperUniverse.sln
 mono: none
 dotnet: 2.1.200
 
-install:
-    - nuget restore SharperUniverse.sln
-    - nuget install NUnit.Runners -Version 3.8.0 -OutputDirectory testrunner
 script:
     - dotnet restore
     - dotnet ./SharperUniverse.Tests.csproj

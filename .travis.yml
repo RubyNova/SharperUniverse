@@ -5,4 +5,4 @@ dotnet: 2.1.200
 
 script:
     - dotnet restore
-    - dotnet test ./SharperUniverse.Tests.csproj
+    - dotnet test ./SharperUniverse.Tests/SharperUniverse.Tests.csproj

@@ -43,7 +43,11 @@ namespace SharperUniverse.Core
 
 
 
-        /// <inheritdoc />
+        /// <summary>
+        /// The logic that runs in an <see cref="ISharperSystem{T}"/> once per update cycle. The update cycle is defined by the <see cref="GameRunner"/> on instantiation.
+        /// </summary>
+        /// <param name="outputHandler"></param>
+        /// <returns></returns>
         public abstract Task CycleUpdateAsync(Func<string, Task> outputHandler);
 
         /// <summary>

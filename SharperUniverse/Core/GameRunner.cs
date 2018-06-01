@@ -12,11 +12,33 @@ namespace SharperUniverse.Core
     /// </summary>
     public class GameRunner
     {
-        private readonly List<ISharperSystem<BaseSharperComponent>> _systems;
-        private readonly UniverseCommandRunner _commandRunner;
-        private readonly IIOHandler _ioHandler;
-        private readonly List<SharperEntity> _entities;
-        private readonly int _deltaMs;
+        private static GameRunner _instance;
+
+        internal static GameRunner Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new GameRunner();
+                }
+
+                return _instance;
+            }
+        }
+
+        internal List<ISharperSystem<BaseSharperComponent>> _systems;
+        internal UniverseCommandRunner _commandRunner;
+        internal IIOHandler _ioHandler;
+        internal List<SharperEntity> _entities;
+        internal int _deltaMs;
+
+        internal GameRunner()
+        {
+            _systems = new List<ISharperSystem<BaseSharperComponent>>();
+            _commandRunner = new UniverseCommandRunner();
+            _entities = new List<SharperEntity>();
+        }
 
         /// <summary>
         /// Creates a new instance of <see cref="GameRunner"/> with the specified <see cref="UniverseCommandRunner"/> and <see cref="IIOHandler"/> instances, along with the delta time, in milliseconds.

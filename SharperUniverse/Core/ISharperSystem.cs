@@ -15,5 +15,7 @@ namespace SharperUniverse.Core
         /// <param name="outputHandler"></param>
         /// <returns></returns>
         Task CycleUpdateAsync(Func<string, Task> outputHandler);
+
+        Task RegisterComponentAsync(SharperEntity entity, params object[] args);
     }
 }

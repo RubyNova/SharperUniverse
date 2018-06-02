@@ -12,32 +12,18 @@ namespace SharperUniverse.Core
     /// </summary>
     public class GameRunner
     {
-        private static GameRunner _instance;
-
-        internal static GameRunner Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new GameRunner();
-                }
-
-                return _instance;
-            }
-        }
-
-        internal List<ISharperSystem<BaseSharperComponent>> _systems;
-        internal UniverseCommandRunner _commandRunner;
-        internal IIOHandler _ioHandler;
-        internal List<SharperEntity> _entities;
-        internal int _deltaMs;
+        internal List<ISharperSystem<BaseSharperComponent>> Systems { get; set; }
+        internal UniverseCommandRunner CommandRunner { get; set; }
+        internal List<SharperEntity> Entities { get; set; }
+        internal IIOHandler IOHandler { get; set; }
+        internal int DeltaMs { get; set; }
 
         internal GameRunner()
         {
-            _systems = new List<ISharperSystem<BaseSharperComponent>>();
-            _commandRunner = new UniverseCommandRunner();
-            _entities = new List<SharperEntity>();
+            Systems = new List<ISharperSystem<BaseSharperComponent>>();
+            CommandRunner = new UniverseCommandRunner();
+            Entities = new List<SharperEntity>();
+            DeltaMs = 50;
         }
 
         /// <summary>
@@ -48,11 +34,11 @@ namespace SharperUniverse.Core
         /// <param name="deltaMs">The frequency of the update cycle, in milliseconds.</param>
         public GameRunner(UniverseCommandRunner commandRunner, IIOHandler ioHandler, int deltaMs)
         {
-            _systems = new List<ISharperSystem<BaseSharperComponent>>();
-            _commandRunner = commandRunner;
-            _ioHandler = ioHandler;
-            _entities = new List<SharperEntity>();
-            _deltaMs = deltaMs;
+            Systems = new List<ISharperSystem<BaseSharperComponent>>();
+            CommandRunner = commandRunner;
+            IOHandler = ioHandler;
+            Entities = new List<SharperEntity>();
+            DeltaMs = deltaMs;
         }
 
         /// <summary>
@@ -61,9 +47,9 @@ namespace SharperUniverse.Core
         /// <param name="system">The target system to register.</param>
         public void RegisterSystem(ISharperSystem<BaseSharperComponent> system)
         {
-            if (_systems.Contains(system) || _systems.Any(x => x.GetType() == system.GetType())) throw new DuplicateSharperObjectException();
+            if (Systems.Contains(system) || Systems.Any(x => x.GetType() == system.GetType())) throw new DuplicateSharperObjectException();
 
-            _systems.Add(system);
+            Systems.Add(system);
         }
 
         /// <summary>
@@ -73,7 +59,7 @@ namespace SharperUniverse.Core
         public Task<SharperEntity> CreateEntityAsync()
         {
             var ent = new SharperEntity();
-            _entities.Add(ent);
+            Entities.Add(ent);
             return Task.FromResult(ent); //I have no idea if this is ok LUL
         }
 
@@ -83,33 +69,33 @@ namespace SharperUniverse.Core
         /// <returns>A <see cref="Task"/> represnting the asynchronous game loop.</returns>
         public async Task RunGameAsync()
         {
-            _commandRunner.ComposeCommands(_ioHandler, _systems);
+            CommandRunner.ComposeCommands(IOHandler, Systems);
             ComposeSystems();
-            Task<(string commandName, List<string> args)> inputTask = Task.Run(() => _ioHandler.GetInputAsync());
-            Func<string, Task> outputDel = _ioHandler.SendOutputAsync;
+            Task<(string commandName, List<string> args)> inputTask = Task.Run(() => IOHandler.GetInputAsync());
+            Func<string, Task> outputDel = IOHandler.SendOutputAsync;
             while (true)
             {
                 if (inputTask.IsCompleted)
                 {
-                    await _commandRunner.AttemptExecuteAsync(inputTask.Result.commandName, inputTask.Result.args);
-                    inputTask = Task.Run(() => _ioHandler.GetInputAsync());
+                    await CommandRunner.AttemptExecuteAsync(inputTask.Result.commandName, inputTask.Result.args);
+                    inputTask = Task.Run(() => IOHandler.GetInputAsync());
                 }
                 else if (inputTask.IsFaulted)
                 {
                     var exception = inputTask.Exception ?? new Exception("REEEEEEEEEEEEEEEEEEE WTF DID YOU DO TO MY POOR ENGINE???");
                     throw exception;
                 }
-                foreach (var sharperSystem in _systems)
+                foreach (var sharperSystem in Systems)
                 {
                     await sharperSystem.CycleUpdateAsync(outputDel);
                 }
-                await Task.Delay(_deltaMs);
+                await Task.Delay(DeltaMs);
             }
         }
 
         private void ComposeSystems()
         {
-            foreach (var sharperSystem in _systems)
+            foreach (var sharperSystem in Systems)
             {
                 var sysType = sharperSystem.GetType();
                 var method = sysType.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
@@ -124,7 +110,7 @@ namespace SharperUniverse.Core
                 var systems = new List<object>();
                 foreach (var parameterInfo in parameters)
                 {
-                    systems.Add(_systems.First(x => x.GetType() == parameterInfo.ParameterType));
+                    systems.Add(Systems.First(x => x.GetType() == parameterInfo.ParameterType));
                 }
                 method.Invoke(sharperSystem, systems.ToArray());
             }

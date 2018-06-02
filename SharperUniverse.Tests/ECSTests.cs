@@ -123,11 +123,12 @@ namespace SharperUniverse.Tests
                 .AddIOHandler(_ioMock)
                 .AddSystem<TestSystem>()
                 .AddSystem<EmptySystem>()
-                .ComposeSystems();
+                .ComposeSystems()
+                .Build();
 
             Assert.DoesNotThrowAsync(async () =>
             {
-                Task.Run(() => builder.StartGame());
+                Task.Run(() => builder.StartGameAsync());
                 await Task.Delay(3000);
             });
         }

@@ -8,22 +8,30 @@ namespace SharperUniverse.Core
 {
     public class GameBuilder
     {
+        private GameRunner _game;
+
+        public GameBuilder()
+        {
+            // Prime our game runner, and add to it as we construct the builder
+            _game = new GameRunner();
+        }
+
         public IOHandlerBuilder AddCommand<T>(string name) where T : IUniverseCommandBinding
         {
             var binding = (IUniverseCommandBinding)Activator.CreateInstance(typeof(T), name);
-            GameRunner.Instance._commandRunner.AddCommandBinding(binding);
+            _game.CommandRunner.AddCommandBinding(binding);
 
-            return new IOHandlerBuilder(this);
+            return new IOHandlerBuilder(_game);
         }
     }
 
     public class IOHandlerBuilder
     {
-        private GameBuilder _gameBuilder;
+        private GameRunner _game;
 
-        public IOHandlerBuilder(GameBuilder gameBuilder)
+        public IOHandlerBuilder(GameRunner game)
         {
-            _gameBuilder = gameBuilder;
+            _game = game;
         }
 
         public SystemBuilder AddIOHandler<T>() where T : IIOHandler
@@ -34,19 +42,19 @@ namespace SharperUniverse.Core
 
         public SystemBuilder AddIOHandler(IIOHandler handler)
         {
-            GameRunner.Instance._ioHandler = handler;
-            return new SystemBuilder(_gameBuilder);
+            _game.IOHandler = handler;
+            return new SystemBuilder(_game);
         }
     }
 
     public class SystemBuilder
     {
-        private GameBuilder _gameBuilder;
+        private GameRunner _game;
         private readonly List<ConstructorInfo> _systemBuilders;
 
-        public SystemBuilder(GameBuilder gameBuilder)
+        public SystemBuilder(GameRunner game)
         {
-            _gameBuilder = gameBuilder;
+            _game = game;
             _systemBuilders = new List<ConstructorInfo>();
         }
 
@@ -55,10 +63,7 @@ namespace SharperUniverse.Core
             var systemConstructors = typeof(TSystem).GetConstructors();
             foreach (var systemConstructor in systemConstructors)
             {
-                var parameters = systemConstructor.GetParameters();
-                List<object> builtParameters = new List<object>();
-
-                foreach (var parameter in parameters)
+                foreach (var parameter in systemConstructor.GetParameters())
                 {
                     if (parameter.ParameterType != typeof(GameRunner))
                     {
@@ -68,7 +73,6 @@ namespace SharperUniverse.Core
                 }
 
                 _systemBuilders.Add(systemConstructor);
-
                 break;
             }
 
@@ -80,51 +84,100 @@ namespace SharperUniverse.Core
             // Simply invoking this allows the implicit registration under the hood from the system's base
             foreach (var systemBuilder in _systemBuilders)
             {
-                systemBuilder.Invoke(new[] { GameRunner.Instance });
+                systemBuilder.Invoke(new[] { _game });
             }
 
-            return new EntityBuilder(_gameBuilder);
+            return new EntityBuilder(_game);
         }
     }
 
     public class EntityBuilder
     {
-        private GameBuilder _gameBuilder;
+        private GameRunner _game;
         private List<SharperEntity> _entities;
 
-        public EntityBuilder(GameBuilder gameBuilder)
+        public EntityBuilder(GameRunner game)
         {
-            _gameBuilder = gameBuilder;
+            _game = game;
             _entities = new List<SharperEntity>();
         }
 
-        public SharperEntity AddEntity()
+        public EntityBuilder AddEntity()
         {
-            var entity = new SharperEntity();
-            GameRunner.Instance._entities.Add(entity);
-            return entity;
+            _entities.Add(new SharperEntity());
+            return this;
         }
 
-        public async Task StartGame()
+        public EntityBuilder WithComponent<T>(params object[] args) where T : BaseSharperComponent
         {
-            await GameRunner.Instance.RunGameAsync();
-        }
-    }
-
-    public static class SharperEntityExtensions
-    {
-        public static async Task<SharperEntity> WithComponentAsync<T>(this SharperEntity self, params object[] args) where T : BaseSharperComponent
-        {
-            foreach (var system in GameRunner.Instance._systems)
+            foreach (var system in _game.Systems)
             {
                 var componentToMatch = system.GetType().BaseType.GetGenericArguments().SingleOrDefault(c => c.ToString().Equals(typeof(T).ToString()));
                 if (componentToMatch == null) continue;
 
-                await system.RegisterComponentAsync(self, args);
+                // If we're calling this, we're always going to attach it to the most recently created entity (from the builder pattern)
+                system.RegisterComponentAsync(_entities.Last(), args).GetAwaiter().GetResult();
+
                 break;
             }
 
-            return self;
+            return this;
+        }
+
+        public EntityBuilder ComposeEntities()
+        {
+            foreach (var entity in _entities)
+            {
+                _game.Entities.AddRange(_entities);
+            }
+
+            return this;
+        }
+
+        public OptionsBuilder WithOptions()
+        {
+            return new OptionsBuilder(_game);
+        }
+
+        public ComposeBuilder Build()
+        {
+            return new ComposeBuilder(_game);
+        }
+    }
+
+    public class OptionsBuilder
+    {
+        private GameRunner _game;
+
+        public OptionsBuilder(GameRunner game)
+        {
+            _game = game;
+        }
+
+        public OptionsBuilder SetLoopDelay(int ms)
+        {
+            _game.DeltaMs = ms;
+            return this;
+        }
+
+        public ComposeBuilder Build()
+        {
+            return new ComposeBuilder(_game);
+        }
+    }
+
+    public class ComposeBuilder
+    {
+        private GameRunner _game;
+
+        public ComposeBuilder(GameRunner game)
+        {
+            _game = game;
+        }
+
+        public async Task StartGameAsync()
+        {
+            await _game.RunGameAsync();
         }
     }
 }

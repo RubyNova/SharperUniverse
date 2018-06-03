@@ -12,6 +12,18 @@ namespace SharperUniverse.Tests
     public class GameBuilderTests
     {
         private Mock<IIOHandler> _ioHandler;
+        private Action<ComposeBuilder> _runQuickGame = b =>
+        {
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                var theTask = Task.Run(async () => await b.StartGameAsync());
+                await Task.Delay(3000);
+                if (theTask.IsFaulted)
+                {
+                    throw theTask.Exception;
+                }
+            });
+        };
 
         [SetUp]
         public void SetUp()
@@ -35,15 +47,7 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .Build();
 
-            Assert.DoesNotThrowAsync(async () =>
-            {
-                var theTask = Task.Run(async () => await builder.StartGameAsync());
-                await Task.Delay(3000);
-                if (theTask.IsFaulted)
-                {
-                    throw theTask.Exception;
-                }
-            });
+            _runQuickGame(builder);
         }
 
         [Test]
@@ -70,15 +74,7 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .Build();
 
-            Assert.DoesNotThrowAsync(async () =>
-            {
-                var theTask = Task.Run(async () => await builder.StartGameAsync());
-                await Task.Delay(3000);
-                if (theTask.IsFaulted)
-                {
-                    throw theTask.Exception;
-                }
-            });
+            _runQuickGame(builder);
         }
 
         [Test]
@@ -99,15 +95,7 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .Build();
 
-            Assert.DoesNotThrowAsync(async () =>
-            {
-                var theTask = Task.Run(async () => await builder.StartGameAsync());
-                await Task.Delay(3000);
-                if (theTask.IsFaulted)
-                {
-                    throw theTask.Exception;
-                }
-            });
+            _runQuickGame(builder);
         }
 
         [Test]
@@ -123,15 +111,7 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .Build();
 
-            Assert.DoesNotThrowAsync(async () =>
-            {
-                var theTask = Task.Run(async () => await builder.StartGameAsync());
-                await Task.Delay(3000);
-                if (theTask.IsFaulted)
-                {
-                    throw theTask.Exception;
-                }
-            });
+            _runQuickGame(builder);
         }
     }
 }

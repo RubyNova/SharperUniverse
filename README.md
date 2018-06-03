@@ -32,6 +32,7 @@ Foo();
 * [AlmightyThud](https://github.com/JasonHughes94)
 * [Ryada](https://github.com/ryadaproductions)
 * [kscarlett](https://github.com/kscarlett)
+* [mariocatch](https://github.com/mariocatch) - Contributed the SharperUniverse fluent builder system
 
 If you want to help out with the project, take a look at the [contribution guidelines](CONTRIBUTING.md).
 

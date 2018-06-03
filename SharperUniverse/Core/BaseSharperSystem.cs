@@ -41,8 +41,6 @@ namespace SharperUniverse.Core
             Game = game;
         }
 
-
-
         /// <summary>
         /// The logic that runs in an <see cref="ISharperSystem{T}"/> once per update cycle. The update cycle is defined by the <see cref="GameRunner"/> on instantiation.
         /// </summary>

@@ -16,7 +16,8 @@ namespace SharperUniverse.Example.GuessingGame
                 .AddSystem<PlayerSystem>()
                 .AddSystem<RoundSystem>()
                 .ComposeSystems()
-                .AddEntity().WithComponent<PlayerComponent>().WithComponent<PlayerComponent>()
+                .AddEntity().WithComponent<PlayerComponent>()
+                .AddEntity().WithComponent<PlayerComponent>()
                 .AddEntity().WithComponent<RoundComponent>()
                 .ComposeEntities().Build();
 

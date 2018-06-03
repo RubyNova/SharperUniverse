@@ -199,10 +199,8 @@ namespace SharperUniverse.Core
             // TODO: Probably should add a bool class member to track whether this method has been called or not
             //  If it has been called, then set the member to true, and check its true-ness in the other creation methods in this class
             //  We return an EntityBuilder here for convenience, in-case they don't want to add an OptionsBuilder
-            foreach (var entity in _entities)
-            {
-                _game.Entities.AddRange(_entities);
-            }
+
+            _game.Entities.AddRange(_entities);
 
             return this;
         }

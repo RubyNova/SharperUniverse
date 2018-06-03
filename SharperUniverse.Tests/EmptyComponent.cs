@@ -4,7 +4,7 @@ namespace SharperUniverse.Tests
 {
     public class EmptyComponent : BaseSharperComponent
     {
-        public EmptyComponent()
+        public EmptyComponent(SharperEntity entity)
         {
 
         }

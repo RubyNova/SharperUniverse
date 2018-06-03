@@ -28,29 +28,12 @@ namespace SharperUniverse.Core
         /// <typeparam name="T">The type of <see cref="IUniverseCommandBinding"/> to add as a command binding.</typeparam>
         /// <param name="name">The name/identifier of this <see cref="IUniverseCommandBinding"/>.</param>
         /// <returns>An <see cref="IOHandlerBuilder"/>, for building the next phase of the Sharper Universe.</returns>
-        public IOHandlerBuilder AddCommand<T>(string name) where T : IUniverseCommandBinding
+        public GameBuilder AddCommand<T>(string name) where T : IUniverseCommandBinding
         {
             var binding = (IUniverseCommandBinding)Activator.CreateInstance(typeof(T), name);
             _game.CommandRunner.AddCommandBinding(binding);
 
-            return new IOHandlerBuilder(_game);
-        }
-    }
-
-    /// <summary>
-    /// The builder for an <see cref="IIOHandler"/>.
-    /// </summary>
-    public class IOHandlerBuilder
-    {
-        private GameRunner _game;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IOHandlerBuilder"/> class.
-        /// </summary>
-        /// <param name="game">The <see cref="GameRunner"/> being built by this <see cref="GameBuilder"/>.</param>
-        internal IOHandlerBuilder(GameRunner game)
-        {
-            _game = game;
+            return this;
         }
 
         /// <summary>

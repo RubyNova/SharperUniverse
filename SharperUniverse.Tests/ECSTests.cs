@@ -22,13 +22,13 @@ namespace SharperUniverse.Tests
             _ioMock.SendOutputAsync(Arg.Any<string>()).Returns(Task.CompletedTask)
                 .AndDoes(x => _uiOutput = (string)x[0]);
 
-            _ioMock.GetInputAsync().Returns(Task.FromResult(("say", new List<string>{"hello"}))).AndDoes(async x =>
-            {
-                while (!_inputEntered)
-                {
-                    await Task.Delay(500);
-                }
-            });
+            _ioMock.GetInputAsync().Returns(Task.FromResult(("say", new List<string> { "hello" }))).AndDoes(async x =>
+               {
+                   while (!_inputEntered)
+                   {
+                       await Task.Delay(500);
+                   }
+               });
 
             _commandRunner = new UniverseCommandRunner();
             _gameRunner = new GameRunner(_commandRunner, _ioMock, 50);
@@ -118,12 +118,17 @@ namespace SharperUniverse.Tests
         [Test]
         public void CanRunGameWithMultipleSystems()
         {
-            var sysOne = new TestSystem(_gameRunner);
-            var sysTwo = new EmptySystem(_gameRunner);
+            var builder = new GameBuilder()
+                .AddCommand<EmptyCommandBinding>("")
+                .AddIOHandler(_ioMock)
+                .AddSystem<TestSystem>()
+                .AddSystem<EmptySystem>()
+                .ComposeSystems()
+                .Build();
 
-            Assert.DoesNotThrowAsync(async() =>
+            Assert.DoesNotThrowAsync(async () =>
             {
-                var gameTask = Task.Run(_gameRunner.RunGameAsync);
+                Task.Run(() => builder.StartGameAsync());
                 await Task.Delay(3000);
             });
         }
@@ -131,6 +136,14 @@ namespace SharperUniverse.Tests
         [Test]
         public async Task CanRunWithSystemsCallingEachOther()
         {
+            var builder = new GameBuilder()
+                .AddCommand<EmptyCommandBinding>("")
+                .AddIOHandler(_ioMock)
+                .AddSystem<TestSystem>()
+                .AddSystem<EmptySystem>()
+                .ComposeSystems();
+
+
             var sysOne = new TestSystem(_gameRunner);
             var sysTwo = new EmptySystem(_gameRunner);
             var gameTask = _gameRunner.RunGameAsync();

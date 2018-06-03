@@ -2,7 +2,11 @@
 
 namespace SharperUniverse.Tests
 {
-    class EmptyComponent : BaseSharperComponent
+    public class EmptyComponent : BaseSharperComponent
     {
+        public EmptyComponent()
+        {
+
+        }
     }
 }

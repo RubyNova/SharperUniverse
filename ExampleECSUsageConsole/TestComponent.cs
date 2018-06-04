@@ -2,13 +2,15 @@
 
 namespace ExampleECSUsageConsole
 {
-    class TestComponent : BaseSharperComponent
+    public class TestComponent : BaseSharperComponent
     {
         public bool State { get; set; }
+        public SharperEntity OwnerEntity { get; }
 
-        public TestComponent(SharperEntity entity, bool startState) : base(entity)
+        public TestComponent(SharperEntity entity, bool startState, SharperEntity ownerEntity) : base(entity)
         {
             State = startState;
+            OwnerEntity = ownerEntity;
         }
     }
 }

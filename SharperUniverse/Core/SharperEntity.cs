@@ -8,6 +8,6 @@ namespace SharperUniverse.Core
     /// </summary>
     public sealed class SharperEntity
     {
-
+        public bool ShouldDestroy { get; set; }
     }
 }

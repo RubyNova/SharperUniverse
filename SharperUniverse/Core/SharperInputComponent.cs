@@ -7,7 +7,7 @@ namespace SharperUniverse.Core
     public class SharperInputComponent : BaseSharperComponent
     {
         public IUniverseCommandSource BindingSource { get; }
-        public IUniverseCommandBinding CurrentCommand { get; set; }
+        public IUniverseCommandInfo CurrentCommand { get; set; }
 
         public SharperInputComponent(SharperEntity entity, IUniverseCommandSource bindingSource) : base(entity)
         {

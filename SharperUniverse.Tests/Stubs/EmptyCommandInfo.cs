@@ -4,15 +4,9 @@ using SharperUniverse.Core;
 
 namespace SharperUniverse.Tests.Stubs
 {
-    public class EmptyCommandBinding : IUniverseCommandBinding
+    public class EmptyCommandInfo : IUniverseCommandInfo
     {
         private IIOHandler _ioHandler;
-        public string CommandName { get; }
-
-        public EmptyCommandBinding(string commandName)
-        {
-            CommandName = commandName;
-        }
 
         [SharperInject]
         private void InitializeCommandRequirements(IIOHandler ioHandler)

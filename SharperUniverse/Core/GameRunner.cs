@@ -12,6 +12,7 @@ namespace SharperUniverse.Core
     /// </summary>
     public class GameRunner
     {
+        internal Dictionary<string, Type> CommandBindings { get; set; }
         internal List<ISharperSystem<BaseSharperComponent>> Systems { get; set; }
         internal List<SharperEntity> Entities { get; set; }
         internal IIOHandler IOHandler { get; set; }
@@ -22,6 +23,7 @@ namespace SharperUniverse.Core
             Systems = new List<ISharperSystem<BaseSharperComponent>>();
             Entities = new List<SharperEntity>();
             DeltaMs = 50;
+            CommandBindings = new Dictionary<string, Type>();
         }
 
         /// <summary>
@@ -30,8 +32,18 @@ namespace SharperUniverse.Core
         /// <param name="commandRunner">Your instance of <see cref="UniverseCommandRunner"/>.</param>
         /// <param name="ioHandler">Your implementation of the IO logic.</param>
         /// <param name="deltaMs">The frequency of the update cycle, in milliseconds.</param>
+        public GameRunner(IIOHandler ioHandler, Dictionary<string, Type> commandBindings, int deltaMs)
+        {
+            CommandBindings = commandBindings;
+            Systems = new List<ISharperSystem<BaseSharperComponent>>();
+            IOHandler = ioHandler;
+            Entities = new List<SharperEntity>();
+            DeltaMs = deltaMs;
+        }
+
         public GameRunner(IIOHandler ioHandler, int deltaMs)
         {
+            CommandBindings = new Dictionary<string, Type>();
             Systems = new List<ISharperSystem<BaseSharperComponent>>();
             IOHandler = ioHandler;
             Entities = new List<SharperEntity>();
@@ -69,11 +81,14 @@ namespace SharperUniverse.Core
             ComposeSystems();
             Task<(string CommandName, List<string> Args, IUniverseCommandSource CommandSource)> inputTask = Task.Run(() => IOHandler.GetInputAsync());
             Func<string, Task> outputDel = IOHandler.SendOutputAsync;
+            var inputSystem = (SharperInputSystem)Systems.First(x => x is SharperInputSystem);
             while (true)
             {
                 if (inputTask.IsCompleted)
                 {
-                    await CommandRunner.AttemptExecuteAsync(inputTask.Result.CommandName, inputTask.Result.Args);
+                    var commandModel = (IUniverseCommandInfo)Activator.CreateInstance(CommandBindings[inputTask.Result.CommandName]);
+                    await commandModel.ProcessArgsAsync(inputTask.Result.Args);
+                    await inputSystem.AssignNewCommandAsync(commandModel, inputTask.Result.CommandSource);
                     inputTask = Task.Run(() => IOHandler.GetInputAsync());
                 }
                 else if (inputTask.IsFaulted)
@@ -84,7 +99,12 @@ namespace SharperUniverse.Core
                 foreach (var sharperSystem in Systems)
                 {
                     await sharperSystem.CycleUpdateAsync(outputDel);
+                    foreach (var entity in Entities.Where(x => x.ShouldDestroy))
+                    {
+                        await sharperSystem.UnregisterAllComponentsByEntityAsync(entity);
+                    }
                 }
+                await inputSystem.CycleCommandFlushAsync();
                 await Task.Delay(DeltaMs);
             }
         }

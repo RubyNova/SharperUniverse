@@ -24,15 +24,14 @@ namespace SharperUniverse.Core
         }
 
         /// <summary>
-        /// Add a <see cref="IUniverseCommandBinding"/> to the <see cref="GameRunner"/>.
+        /// Add a <see cref="IUniverseCommandInfo"/> to the <see cref="GameRunner"/>.
         /// </summary>
-        /// <typeparam name="T">The type of <see cref="IUniverseCommandBinding"/> to add as a command binding.</typeparam>
-        /// <param name="name">The name/identifier of this <see cref="IUniverseCommandBinding"/>.</param>
+        /// <typeparam name="T">The type of <see cref="IUniverseCommandInfo"/> to add as a command binding.</typeparam>
+        /// <param name="name">The name/identifier of this <see cref="IUniverseCommandInfo"/>.</param>
         /// <returns>An <see cref="IOHandlerBuilder"/>, for building the next phase of the Sharper Universe.</returns>
-        public GameBuilder AddCommand<T>(string name) where T : IUniverseCommandBinding
+        public GameBuilder AddCommand<T>(string name) where T : IUniverseCommandInfo
         {
-            var binding = (IUniverseCommandBinding)Activator.CreateInstance(typeof(T), name);
-            _game.CommandRunner.AddCommandBinding(binding);
+            _game.CommandBindings.Add(name, typeof(T));
 
             return this;
         }
@@ -81,6 +80,7 @@ namespace SharperUniverse.Core
             {
                 {typeof(GameRunner), _game }
             };
+            _systemBuilders.AddRange(typeof(SharperInputSystem).GetConstructors());
         }
 
         /// <summary>

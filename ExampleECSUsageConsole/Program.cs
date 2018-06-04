@@ -9,11 +9,12 @@ namespace ExampleECSUsageConsole
         {
 
             var builder = new GameBuilder()
-                .AddCommand<TestCommandBinding>("s")
+                .AddCommand<TestCommandInfo>("s")
                 .AddIOHandler<ConsoleIOHandler>()
                 .AddSystem<TestSystem>()
                 .ComposeSystems()
-                .AddEntity().WithComponent<TestComponent>(true)
+                //.AddEntity().WithComponent<SharperInputComponent>(new TestCommandSource(0))
+                //.AddEntity().WithComponent<TestComponent>(true, ) //this needs a SharperEntity with a SharperInputComponent
                 .ComposeEntities()
                 .Build();
 

@@ -31,7 +31,7 @@ namespace SharperUniverse.Tests
         {
             _ioHandler = new Mock<IIOHandler>();
 
-            var tuple = ("foo", new List<string>());
+            var tuple = ("test", new List<string>(), (IUniverseCommandSource)new TestCommandSource(0));
             _ioHandler.Setup(c => c.GetInputAsync()).Returns(Task.FromResult(tuple));
             _ioHandler.Setup(c => c.SendOutputAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
         }
@@ -40,7 +40,7 @@ namespace SharperUniverse.Tests
         public void CanDoBasicBuilderConstruction()
         {
             var builder = new GameBuilder()
-                .AddCommand<EmptyCommandBinding>("")
+                .AddCommand<EmptyCommandInfo>("test")
                 .AddIOHandler(_ioHandler.Object)
                 .AddSystem<EmptySystem>()
                 .ComposeSystems()
@@ -55,18 +55,18 @@ namespace SharperUniverse.Tests
         public void CanAddMultipleCommands()
         {
             var builder = new GameBuilder()
-               .AddCommand<EmptyCommandBinding>("a")
-               .AddCommand<EmptyCommandBinding>("b")
-               .AddCommand<EmptyCommandBinding>("c")
-               .AddCommand<EmptyCommandBinding>("d")
-               .AddCommand<EmptyCommandBinding>("e");
+               .AddCommand<EmptyCommandInfo>("a")
+               .AddCommand<EmptyCommandInfo>("b")
+               .AddCommand<EmptyCommandInfo>("c")
+               .AddCommand<EmptyCommandInfo>("d")
+               .AddCommand<EmptyCommandInfo>("e");
         }
 
         [Test]
         public void CanAddMultipleSystems()
         {
             var builder = new GameBuilder()
-                .AddCommand<EmptyCommandBinding>("")
+                .AddCommand<EmptyCommandInfo>("test")
                 .AddIOHandler(_ioHandler.Object)
                 .AddSystem<EmptySystem>()
                 .AddSystem<TestSystem>()
@@ -82,7 +82,7 @@ namespace SharperUniverse.Tests
         public void CanAddMultipleEntities()
         {
             var builder = new GameBuilder()
-                .AddCommand<EmptyCommandBinding>("")
+                .AddCommand<EmptyCommandInfo>("test")
                 .AddIOHandler(_ioHandler.Object)
                 .AddSystem<EmptySystem>()
                 .ComposeSystems()
@@ -103,7 +103,7 @@ namespace SharperUniverse.Tests
         public void CanAddMultipleComponentsToAnEntity()
         {
             var builder = new GameBuilder()
-                .AddCommand<EmptyCommandBinding>("")
+                .AddCommand<EmptyCommandInfo>("test")
                 .AddIOHandler(_ioHandler.Object)
                 .AddSystem<EmptySystem>()
                 .AddSystem<TestSystem>()
@@ -119,7 +119,7 @@ namespace SharperUniverse.Tests
         public void CanBuildThreeLevelSystemGraph()
         {
             var builder = new GameBuilder()
-                .AddCommand<EmptyCommandBinding>("")
+                .AddCommand<EmptyCommandInfo>("test")
                 .AddIOHandler(_ioHandler.Object)
                 .AddSystem<EmptySystem>()
                 .AddSystem<TestSystem>()

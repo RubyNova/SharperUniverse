@@ -17,5 +17,7 @@ namespace SharperUniverse.Core
         Task CycleUpdateAsync(Func<string, Task> outputHandler);
 
         Task RegisterComponentAsync(SharperEntity entity, params object[] args);
+
+        Task UnregisterAllComponentsByEntityAsync(SharperEntity entity);
     }
 }

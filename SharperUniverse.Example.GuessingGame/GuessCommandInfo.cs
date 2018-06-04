@@ -5,7 +5,7 @@ using SharperUniverse.Core;
 
 namespace SharperUniverse.Example.GuessingGame
 {
-    public class GuessCommandBinding : IUniverseCommandBinding
+    public class GuessCommandInfo : IUniverseCommandInfo
     {
         private IIOHandler _ioHandler;
         private RoundSystem _roundSystem;
@@ -13,7 +13,7 @@ namespace SharperUniverse.Example.GuessingGame
 
         public string CommandName { get; }
 
-        public GuessCommandBinding(string commandName)
+        public GuessCommandInfo(string commandName)
         {
             CommandName = commandName;
         }

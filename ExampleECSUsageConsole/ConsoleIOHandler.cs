@@ -16,12 +16,12 @@ namespace ExampleECSUsageConsole
             if (inputSplit.Length >= 2)
             {
                 var returnList = inputSplit.SubArray(1, inputSplit.Length - 1);
-                return (inputSplit[0], returnList.ToList(), null);
+                return (inputSplit[0], returnList.ToList(), new TestCommandSource(0));
             }
 
-            if (inputSplit.Length > 1 && inputSplit[0] != string.Empty) return (inputSplit[0], new List<string>(), null);
+            if (inputSplit.Length > 1 && inputSplit[0] != string.Empty) return (inputSplit[0], new List<string>(), new TestCommandSource(0));
 
-            return ("", new List<string>(), null);
+            return ("", new List<string>(), new TestCommandSource(0));
         }
 
         public async Task SendOutputAsync(string outputText)

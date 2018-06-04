@@ -4,7 +4,7 @@ namespace SharperUniverse.Tests.Stubs
 {
     public class BarComponent : BaseSharperComponent
     {
-        public BarComponent(SharperEntity entity)
+        public BarComponent(SharperEntity entity) : base(entity)
         {
 
         }

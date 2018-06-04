@@ -1,9 +1,11 @@
-﻿namespace SharperUniverse.Core
+﻿using System;
+
+namespace SharperUniverse.Core
 {
     /// <summary>
     /// Event arguments for all <see cref="BaseSharperComponent"/> based events.
     /// </summary>
-    public class SharperComponentEventArgs
+    public class SharperComponentEventArgs : EventArgs
     {
         /// <summary>
         /// the <see cref="BaseSharperComponent"/> associated with the event call.

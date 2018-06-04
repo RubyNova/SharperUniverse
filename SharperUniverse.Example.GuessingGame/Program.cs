@@ -8,7 +8,7 @@ namespace SharperUniverse.Example.GuessingGame
         static async Task Main(string[] args)
         {
             var builder = new GameBuilder()
-                .AddCommand<GuessCommandBinding>("g")
+                .AddCommand<GuessCommandInfo>("g")
                 .AddIOHandler<ConsoleIOHandler>()
                 .AddSystem<PlayerSystem>()
                 .AddSystem<RoundSystem>()

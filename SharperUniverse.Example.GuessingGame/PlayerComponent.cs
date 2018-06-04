@@ -5,13 +5,12 @@ namespace SharperUniverse.Example.GuessingGame
     public class PlayerComponent : BaseSharperComponent
     {
         public int PlayerNumber { get; set; }
-        public int Score { get; set; }
-        public int GuessCount { get; set; }
+        public int Score { get; set; } = 0;
+        public int GuessCount { get; set; } = 0;
 
         public PlayerComponent(SharperEntity entity) : base(entity)
         {
-            Score = 0;
-            GuessCount = 0;
+
         }
 
         public override string ToString()

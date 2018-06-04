@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SharperUniverse.Core;
 
-namespace SharperUniverse.Tests
+namespace SharperUniverse.Tests.Stubs
 {
     class EmptySystem : BaseSharperSystem<EmptyComponent>
     {

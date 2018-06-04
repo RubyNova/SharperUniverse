@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SharperUniverse.Core;
 using Moq;
 using System;
+using SharperUniverse.Tests.Stubs;
 
 namespace SharperUniverse.Tests
 {
@@ -108,6 +109,25 @@ namespace SharperUniverse.Tests
                 .AddSystem<TestSystem>()
                 .ComposeSystems()
                 .AddEntity().WithComponent<TestComponent>(true).WithComponent<EmptyComponent>()
+                .ComposeEntities()
+                .Build();
+
+            _runQuickGame(builder);
+        }
+
+        [Test]
+        public void CanBuildThreeLevelSystemGraph()
+        {
+            var builder = new GameBuilder()
+                .AddCommand<EmptyCommandBinding>("")
+                .AddIOHandler(_ioHandler.Object)
+                .AddSystem<EmptySystem>()
+                .AddSystem<TestSystem>()
+                .AddSystem<FooBarSystem>()
+                .ComposeSystems()
+                .AddEntity().WithComponent<EmptyComponent>()
+                .AddEntity().WithComponent<FooBarComponent>()
+                .AddEntity().WithComponent<FooComponent>()
                 .ComposeEntities()
                 .Build();
 

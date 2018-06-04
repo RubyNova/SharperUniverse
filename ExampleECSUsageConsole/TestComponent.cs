@@ -6,9 +6,8 @@ namespace ExampleECSUsageConsole
     {
         public bool State { get; set; }
 
-        public TestComponent(SharperEntity entity, bool startState)
+        public TestComponent(SharperEntity entity, bool startState) : base(entity)
         {
-            Entity = entity;
             State = startState;
         }
     }

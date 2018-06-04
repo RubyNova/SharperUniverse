@@ -12,7 +12,7 @@ namespace SharperUniverse.Core
         /// Asynchronously handles getting input from a source.
         /// </summary>
         /// <returns>Returns a <see cref="Task{TResult}"/> which contains the filtered command name and arguments for the command in question.</returns>
-        Task<(string commandName, List<string> args)> GetInputAsync();
+        Task<(string CommandName, List<string> Args, IUniverseCommandSource CommandSource)> GetInputAsync();
 
         /// <summary>
         /// Asynchronously pushes output from the <see cref="GameRunner"/>.

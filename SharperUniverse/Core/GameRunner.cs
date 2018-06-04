@@ -13,7 +13,6 @@ namespace SharperUniverse.Core
     public class GameRunner
     {
         internal List<ISharperSystem<BaseSharperComponent>> Systems { get; set; }
-        internal UniverseCommandRunner CommandRunner { get; set; }
         internal List<SharperEntity> Entities { get; set; }
         internal IIOHandler IOHandler { get; set; }
         internal int DeltaMs { get; set; }
@@ -21,7 +20,6 @@ namespace SharperUniverse.Core
         internal GameRunner()
         {
             Systems = new List<ISharperSystem<BaseSharperComponent>>();
-            CommandRunner = new UniverseCommandRunner();
             Entities = new List<SharperEntity>();
             DeltaMs = 50;
         }
@@ -32,10 +30,9 @@ namespace SharperUniverse.Core
         /// <param name="commandRunner">Your instance of <see cref="UniverseCommandRunner"/>.</param>
         /// <param name="ioHandler">Your implementation of the IO logic.</param>
         /// <param name="deltaMs">The frequency of the update cycle, in milliseconds.</param>
-        public GameRunner(UniverseCommandRunner commandRunner, IIOHandler ioHandler, int deltaMs)
+        public GameRunner(IIOHandler ioHandler, int deltaMs)
         {
             Systems = new List<ISharperSystem<BaseSharperComponent>>();
-            CommandRunner = commandRunner;
             IOHandler = ioHandler;
             Entities = new List<SharperEntity>();
             DeltaMs = deltaMs;
@@ -69,15 +66,14 @@ namespace SharperUniverse.Core
         /// <returns>A <see cref="Task"/> represnting the asynchronous game loop.</returns>
         public async Task RunGameAsync()
         {
-            CommandRunner.ComposeCommands(IOHandler, Systems);
             ComposeSystems();
-            Task<(string commandName, List<string> args)> inputTask = Task.Run(() => IOHandler.GetInputAsync());
+            Task<(string CommandName, List<string> Args, IUniverseCommandSource CommandSource)> inputTask = Task.Run(() => IOHandler.GetInputAsync());
             Func<string, Task> outputDel = IOHandler.SendOutputAsync;
             while (true)
             {
                 if (inputTask.IsCompleted)
                 {
-                    await CommandRunner.AttemptExecuteAsync(inputTask.Result.commandName, inputTask.Result.args);
+                    await CommandRunner.AttemptExecuteAsync(inputTask.Result.CommandName, inputTask.Result.Args);
                     inputTask = Task.Run(() => IOHandler.GetInputAsync());
                 }
                 else if (inputTask.IsFaulted)

@@ -63,7 +63,7 @@ namespace SharperUniverse.Tests
         {
             var command = Substitute.For<IUniverseCommandBinding>();
             command.CommandName.Returns("say");
-            command.ProcessCommandAsync(Arg.Any<List<string>>()).Returns(Task.CompletedTask)
+            command.ProcessArgsAsync(Arg.Any<List<string>>()).Returns(Task.CompletedTask)
                 .AndDoes(x => _ioMock.SendOutputAsync(x.Arg<List<string>>()[0]));
             _commandRunner.AddCommandBinding(command);
             var gameRunTask = Task.Run(async () => await _gameRunner.RunGameAsync());

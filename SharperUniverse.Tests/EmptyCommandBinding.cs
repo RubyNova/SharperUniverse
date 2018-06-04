@@ -20,7 +20,7 @@ namespace SharperUniverse.Tests
             _ioHandler = ioHandler;
         }
 
-        public Task ProcessCommandAsync(List<string> args)
+        public Task ProcessArgsAsync(List<string> args)
         {
             return Task.CompletedTask;
         }

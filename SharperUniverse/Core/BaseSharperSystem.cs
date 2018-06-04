@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SharperUniverse.Core
@@ -49,7 +50,7 @@ namespace SharperUniverse.Core
         public abstract Task CycleUpdateAsync(Func<string, Task> outputHandler);
 
         /// <summary>
-        /// Registers a component of type <typeparamref name="T"/> name="T"/> and assigns it to the target <see cref="SharperEntity"/>.
+        /// Registers a component of type <typeparamref name="T"/> and assigns it to the target <see cref="SharperEntity"/>.
         /// </summary>
         /// <param name="entity">The target entity.</param>
         /// <param name="args">the values for the new component.</param>
@@ -66,8 +67,6 @@ namespace SharperUniverse.Core
 
             T component = (T)Activator.CreateInstance(typeof(T), inputArr);
 
-            entity.AddComponentAsync(component);
-
             Components.Add(component);
 
             ComponentRegistered?.Invoke(this, new SharperComponentEventArgs(component));
@@ -75,7 +74,7 @@ namespace SharperUniverse.Core
         }
 
         /// <summary>
-        /// Destroys a component of type 
+        /// Destroys a component of the type the system manages.
         /// </summary>
         /// <param name="component">The component to remove from the game.</param>
         /// <returns>Returns a <see cref="Task"/> representing the removal work.</returns>
@@ -83,6 +82,12 @@ namespace SharperUniverse.Core
         {
             Components.Remove(component);
             ComponentUnRegistered?.Invoke(this, new SharperComponentEventArgs(component));
+            return Task.CompletedTask;
+        }
+
+        public Task UnregisterAllComponentsByEntityAsync(SharperEntity entity)
+        {
+            Components.RemoveAll(x => x.Entity == entity);
             return Task.CompletedTask;
         }
     }

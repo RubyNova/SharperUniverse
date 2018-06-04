@@ -8,9 +8,8 @@ namespace SharperUniverse.Example.GuessingGame
         public int Score { get; set; }
         public int GuessCount { get; set; }
 
-        public PlayerComponent(SharperEntity entity)
+        public PlayerComponent(SharperEntity entity) : base(entity)
         {
-            Entity = entity;
             Score = 0;
             GuessCount = 0;
         }

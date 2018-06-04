@@ -5,9 +5,16 @@
     /// </summary>
     public abstract class BaseSharperComponent
     {
+        public bool ShouldDestroy { get; set; }
+
         /// <summary>
         /// The <see cref="SharperEntity"/> this Component is attached to.
         /// </summary>
-        public SharperEntity Entity { get; protected set; }
+        public SharperEntity Entity { get; }
+
+        protected BaseSharperComponent(SharperEntity entity)
+        {
+            Entity = entity;
+        }
     }
 }

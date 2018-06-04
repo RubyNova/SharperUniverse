@@ -12,12 +12,5 @@ namespace SharperUniverse.Core
         /// The name of the command.
         /// </summary>
         string CommandName { get; }
-
-        /// <summary>
-        /// Runs the command logic in the <see cref="IUniverseCommandBinding"/>. This is the entry point for executing the command logic.
-        /// </summary>
-        /// <param name="args">The arguments, in text form, parsed in from the <see cref="IIOHandler"/>.</param>
-        /// <returns></returns>
-        Task ProcessCommandAsync(List<string> args);
     }
 }

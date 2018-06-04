@@ -26,7 +26,7 @@ namespace SharperUniverse.Example.GuessingGame
             _playerSystem = playerSystem;
         }
 
-        public Task ProcessCommandAsync(List<string> args)
+        public Task ProcessArgsAsync(List<string> args)
         {
             if (args.Any())
             {

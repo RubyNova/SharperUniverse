@@ -18,9 +18,8 @@ namespace SharperUniverse.Example.GuessingGame
 
         public int RoundNumber { get; set; }
 
-        public RoundComponent(SharperEntity entity)
+        public RoundComponent(SharperEntity entity) : base(entity)
         {
-            Entity = entity;
             State = RoundState.Start;
         }
     }

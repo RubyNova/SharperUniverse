@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using SharperUniverse.Core;
+using SharperUniverse.Tests.Stubs;
 
 namespace SharperUniverse.Tests
 {

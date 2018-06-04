@@ -17,15 +17,10 @@ namespace SharperUniverse.Example.GuessingGame
         private RoundComponent _roundComponent;
         private PlayerSystem _playerSystem;
 
-        public RoundSystem(GameRunner game) : base(game)
-        {
-            ComponentRegistered += RoundSystem_ComponentRegistered;
-        }
-
-        [SharperInject]
-        private void InitializeCommandRequirements(PlayerSystem playerSystem)
+        public RoundSystem(GameRunner game, PlayerSystem playerSystem) : base(game)
         {
             _playerSystem = playerSystem;
+            ComponentRegistered += RoundSystem_ComponentRegistered;
         }
 
         private void RoundSystem_ComponentRegistered(object sender, SharperComponentEventArgs e)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharperUniverse.Core;
 
-namespace SharperUniverse.Tests
+namespace SharperUniverse.Tests.Stubs
 {
     class TestSystem : BaseSharperSystem<TestComponent>
     {

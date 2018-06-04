@@ -1,6 +1,6 @@
 ﻿using SharperUniverse.Core;
 
-namespace SharperUniverse.Tests
+namespace SharperUniverse.Tests.Stubs
 {
     public class EmptyComponent : BaseSharperComponent
     {

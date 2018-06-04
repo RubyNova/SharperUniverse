@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using SharperUniverse.Core;
-using Moq;
-using System;
 using SharperUniverse.Tests.Stubs;
 
 namespace SharperUniverse.Tests
@@ -12,7 +11,7 @@ namespace SharperUniverse.Tests
     [TestFixture]
     public class GameBuilderTests
     {
-        private Mock<IIOHandler> _ioHandler;
+        private IIOHandler _ioHandler;
         private Action<ComposeBuilder> _runQuickGame = b =>
         {
             Assert.DoesNotThrowAsync(async () =>
@@ -29,11 +28,17 @@ namespace SharperUniverse.Tests
         [SetUp]
         public void SetUp()
         {
-            _ioHandler = new Mock<IIOHandler>();
+            _ioHandler = Substitute.For<IIOHandler>();
 
             var tuple = ("test", new List<string>(), (IUniverseCommandSource)new TestCommandSource(0));
-            _ioHandler.Setup(c => c.GetInputAsync()).Returns(Task.FromResult(tuple));
-            _ioHandler.Setup(c => c.SendOutputAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            _ioHandler.GetInputAsync().Returns(Task.FromResult(tuple));
+            _ioHandler.SendOutputAsync(Arg.Any<string>()).Returns(Task.CompletedTask);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _ioHandler = null;
         }
 
         [Test]
@@ -41,7 +46,7 @@ namespace SharperUniverse.Tests
         {
             var builder = new GameBuilder()
                 .AddCommand<EmptyCommandInfo>("test")
-                .AddIOHandler(_ioHandler.Object)
+                .AddIOHandler(_ioHandler)
                 .AddSystem<EmptySystem>()
                 .ComposeSystems()
                 .AddEntity().WithComponent<EmptyComponent>()
@@ -67,7 +72,7 @@ namespace SharperUniverse.Tests
         {
             var builder = new GameBuilder()
                 .AddCommand<EmptyCommandInfo>("test")
-                .AddIOHandler(_ioHandler.Object)
+                .AddIOHandler(_ioHandler)
                 .AddSystem<EmptySystem>()
                 .AddSystem<TestSystem>()
                 .ComposeSystems()
@@ -83,7 +88,7 @@ namespace SharperUniverse.Tests
         {
             var builder = new GameBuilder()
                 .AddCommand<EmptyCommandInfo>("test")
-                .AddIOHandler(_ioHandler.Object)
+                .AddIOHandler(_ioHandler)
                 .AddSystem<EmptySystem>()
                 .ComposeSystems()
                 .AddEntity()
@@ -104,7 +109,7 @@ namespace SharperUniverse.Tests
         {
             var builder = new GameBuilder()
                 .AddCommand<EmptyCommandInfo>("test")
-                .AddIOHandler(_ioHandler.Object)
+                .AddIOHandler(_ioHandler)
                 .AddSystem<EmptySystem>()
                 .AddSystem<TestSystem>()
                 .ComposeSystems()
@@ -120,7 +125,7 @@ namespace SharperUniverse.Tests
         {
             var builder = new GameBuilder()
                 .AddCommand<EmptyCommandInfo>("test")
-                .AddIOHandler(_ioHandler.Object)
+                .AddIOHandler(_ioHandler)
                 .AddSystem<EmptySystem>()
                 .AddSystem<TestSystem>()
                 .AddSystem<FooBarSystem>()

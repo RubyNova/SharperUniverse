@@ -29,7 +29,7 @@ namespace SharperUniverse.Core
         /// <summary>
         /// All the Components of the generic type currently in existence.
         /// </summary>
-        public List<T> Components { get; }
+        protected List<T> Components { get; }
 
         /// <summary>
         /// Base constructor for any <see cref="BaseSharperSystem{T}"/>. This must be called for the system to function correctly. Do not pass <see cref="ISharperSystem{T}"/> types in an overriden constructor. Instead, use <see cref="SharperInjectAttribute"/>.

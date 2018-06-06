@@ -99,8 +99,10 @@ namespace SharperUniverse.Core
                 foreach (var sharperSystem in Systems)
                 {
                     await sharperSystem.CycleUpdateAsync(outputDel);
-                    foreach (var entity in Entities.Where(x => x.ShouldDestroy))
+                    var entitiesToDestroy = Entities.Where(x => x.ShouldDestroy).ToList();
+                    for (var i = entitiesToDestroy.Count - 1; i > -1; i--)
                     {
+                        var entity = entitiesToDestroy[i];
                         await sharperSystem.UnregisterAllComponentsByEntityAsync(entity);
                     }
                 }

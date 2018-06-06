@@ -73,6 +73,11 @@ namespace SharperUniverse.Core
             return Task.CompletedTask;
         }
 
+        public Task<bool> EntityHasComponentOfManagingTypeAsync(SharperEntity entity)
+        {
+            return Task.FromResult(Components.Any(x => x.Entity == entity));
+        }
+
         /// <summary>
         /// Destroys a component of the type the system manages.
         /// </summary>

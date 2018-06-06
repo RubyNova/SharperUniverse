@@ -86,9 +86,12 @@ namespace SharperUniverse.Core
             {
                 if (inputTask.IsCompleted)
                 {
-                    var commandModel = (IUniverseCommandInfo)Activator.CreateInstance(CommandBindings[inputTask.Result.CommandName]);
-                    await commandModel.ProcessArgsAsync(inputTask.Result.Args);
-                    await inputSystem.AssignNewCommandAsync(commandModel, inputTask.Result.CommandSource);
+                    if (CommandBindings.ContainsKey(inputTask.Result.CommandName))
+                    {
+                        var commandModel = (IUniverseCommandInfo)Activator.CreateInstance(CommandBindings[inputTask.Result.CommandName]);
+                        await commandModel.ProcessArgsAsync(inputTask.Result.Args);
+                        await inputSystem.AssignNewCommandAsync(commandModel, inputTask.Result.CommandSource);
+                    }
                     inputTask = Task.Run(() => IOHandler.GetInputAsync());
                 }
                 else if (inputTask.IsFaulted)

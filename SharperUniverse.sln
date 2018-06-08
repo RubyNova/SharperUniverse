@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleECSUsageConsole", "E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharperUniverse.Tests", "SharperUniverse.Tests\SharperUniverse.Tests.csproj", "{58928961-65C1-4790-82A3-1B5BAE326378}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharperUniverse.Example.GuessingGame", "SharperUniverse.Example.GuessingGame\SharperUniverse.Example.GuessingGame.csproj", "{DE9D4D1D-40CC-4467-A8AE-9630BE0444EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharperUniverse.Example.GuessingGame", "SharperUniverse.Example.GuessingGame\SharperUniverse.Example.GuessingGame.csproj", "{DE9D4D1D-40CC-4467-A8AE-9630BE0444EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharperUniverse.Example.MathGame", "SharperUniverse.Example.MathGame\SharperUniverse.Example.MathGame.csproj", "{52CA85B6-ED45-4ADC-9791-AF07361BB97B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{DE9D4D1D-40CC-4467-A8AE-9630BE0444EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE9D4D1D-40CC-4467-A8AE-9630BE0444EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE9D4D1D-40CC-4467-A8AE-9630BE0444EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52CA85B6-ED45-4ADC-9791-AF07361BB97B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52CA85B6-ED45-4ADC-9791-AF07361BB97B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52CA85B6-ED45-4ADC-9791-AF07361BB97B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52CA85B6-ED45-4ADC-9791-AF07361BB97B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

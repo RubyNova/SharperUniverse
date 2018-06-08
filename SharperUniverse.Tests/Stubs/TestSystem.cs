@@ -11,17 +11,12 @@ namespace SharperUniverse.Tests.Stubs
         private float _updateTime;
         private EmptySystem _system;
 
-        public TestSystem(GameRunner game) : base(game)
+        public TestSystem(GameRunner game, EmptySystem emptySys) : base(game)
         {
             _prevStates = new Dictionary<TestComponent, bool>();
+            _system = emptySys;
             ComponentRegistered += OnComponentRegistered;
             ComponentUnRegistered += OnComponentUnRegistered;
-        }
-
-        [SharperInject]
-        private void InjectSharperSystems(EmptySystem emptySys)
-        {
-            _system = emptySys;
         }
 
         public override Task CycleUpdateAsync(Func<string, Task> outputHandler)

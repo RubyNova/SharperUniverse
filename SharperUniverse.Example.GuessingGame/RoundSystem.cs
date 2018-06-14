@@ -17,9 +17,8 @@ namespace SharperUniverse.Example.GuessingGame
 
         private RoundComponent _roundComponent;
         private PlayerSystem _playerSystem;
-        //private readonly SharperInputSystem _inputSystem;
-        private PlayerComponent _currentPlayer;
 
+        private PlayerComponent _currentPlayer;
         public RoundSystem(GameRunner game, PlayerSystem playerSystem) : base(game)
         {
             _playerSystem = playerSystem;
@@ -65,13 +64,6 @@ namespace SharperUniverse.Example.GuessingGame
         {
             if (_roundComponent != null)
             {
-                // Do I need this?
-                //await ResolveCommandsAsync(await _inputSystem.GetEntitiesByCommandInfoTypesAsync(typeof(GuessCommandInfo))); //you could grab as many command types as you want from this method
-                
-                // I need to get the Guess from the Command Info here and do something with it
-
-                _currentPlayer = _playerSystem.GetCurrentPlayer(_currentTurn);
-
                 switch (_roundComponent.State)
                 {
                     case RoundComponent.RoundState.Start:
@@ -82,27 +74,18 @@ namespace SharperUniverse.Example.GuessingGame
                         break;
                     case RoundComponent.RoundState.NewTurn:
                         _currentTurn += 1;
+                        _currentPlayer = _playerSystem.GetCurrentPlayer(_currentTurn);
                         await outputHandler.Invoke($"\nPlayer {_currentPlayer}'s turn");
                         await outputHandler.Invoke($"Guess a number between 1 and {AnswerUpperBound}");
                         _roundComponent.State = RoundComponent.RoundState.Input;
                         break;
                     case RoundComponent.RoundState.Finish:
+                        _currentPlayer = _playerSystem.GetCurrentPlayer(_currentTurn);
                         await outputHandler.Invoke($"\n> Player {_currentPlayer} wins! - It took them {_currentPlayer?.GuessCount} guesses\n");
                         _roundComponent.State = RoundComponent.RoundState.Start;
                         break;
                 }
             }
-        }
-
-        private Task ResolveCommandsAsync(Dictionary<SharperEntity, IUniverseCommandInfo> commandData)
-        {
-            foreach (var inputEntity in commandData.Keys)
-            {
-                //var componentToUpdate = (RoundComponent)Components.First(); //we can define context here, but since these components currently have no relation to the input entities, we can't apply context just yet
-                ProcessGuess(((GuessCommandInfo)commandData[inputEntity]).Guess);
-            }
-
-            return Task.CompletedTask;
         }
 
         private void PrimeNewRound()

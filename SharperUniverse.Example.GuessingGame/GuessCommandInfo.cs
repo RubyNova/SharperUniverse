@@ -13,8 +13,6 @@ namespace SharperUniverse.Example.GuessingGame
         {
             if (args.Any())
             {
-                // Grab the user's guess, and store it on this command info
-                //  This should be retrievable from a system, right? Does that system need a sharper input system?
                 Guess = int.Parse(args.First());
             }
 

@@ -25,7 +25,18 @@ namespace SharperUniverse.Example.GuessingGame
 
         public override async Task CycleUpdateAsync(Func<string, Task> outputHandler)
         {
-            await ResolveCommandsAsync(await _inputSystem.GetEntitiesByCommandInfoTypesAsync(typeof(GuessCommandInfo))); //you could grab as many command types as you want from this method
+            var commands = await _inputSystem.GetEntitiesByCommandInfoTypesAsync(typeof(GuessCommandInfo));
+            foreach (var command in commands)
+            {
+                switch (command.Value)
+                {
+                    case GuessCommandInfo g:
+                        var guess = g.Guess;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         public void ResetPlayers()
@@ -75,17 +86,6 @@ namespace SharperUniverse.Example.GuessingGame
             }
 
             throw new InvalidOperationException("Something horribly wrong happened - who's turn is it?!");
-        }
-
-        private Task ResolveCommandsAsync(Dictionary<SharperEntity, IUniverseCommandInfo> commandData)
-        {
-            foreach (var inputEntity in commandData.Keys)
-            {
-                //var componentToUpdate = (RoundComponent)Components.First(); //we can define context here, but since these components currently have no relation to the input entities, we can't apply context just yet
-                //ProcessGuess(((GuessCommandInfo)commandData[inputEntity]).Guess);
-            }
-
-            return Task.CompletedTask;
         }
     }
 }

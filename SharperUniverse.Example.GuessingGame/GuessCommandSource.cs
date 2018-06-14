@@ -4,18 +4,16 @@ namespace SharperUniverse.Example.GuessingGame
 {
     class GuessCommandSource : IUniverseCommandSource
     {
-        public int TestIdentifierThing { get; }
+        public int ID { get; set; }
 
-        public GuessCommandSource(int testId)
+        public GuessCommandSource(int id)
         {
-            TestIdentifierThing = testId;
+            ID = id;
         }
 
         public bool SourceIsSameAsBindingSource(IUniverseCommandSource bindingSource)
         {
-            var source = (GuessCommandSource)bindingSource;
-
-            return TestIdentifierThing == source.TestIdentifierThing;
+            return ID == (bindingSource as GuessCommandSource).ID;
         }
     }
 }

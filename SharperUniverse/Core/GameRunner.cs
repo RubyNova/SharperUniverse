@@ -70,21 +70,12 @@ namespace SharperUniverse.Core
             {
                 if (inputTask.IsCompleted)
                 {
-                    if (CommandBindings != null && CommandBindings.Any())
+                    if (CommandBindings.ContainsKey(inputTask.Result.CommandName))
                     {
-                        var commandBinding = CommandBindings.SingleOrDefault(c => c.Key == inputTask?.Result.CommandName);
-                        if (commandBinding.Key != null)
-                        {
-                            var commandModel = (IUniverseCommandInfo)Activator.CreateInstance(commandBinding.Value);
-                            await commandModel.ProcessArgsAsync(inputTask.Result.Args);
-                            await inputSystem.AssignNewCommandAsync(commandModel, inputTask.Result.CommandSource);
-                        }
+                        var commandModel = (IUniverseCommandInfo)Activator.CreateInstance(CommandBindings[inputTask.Result.CommandName]);
+                        await commandModel.ProcessArgsAsync(inputTask.Result.Args);
+                        await inputSystem.AssignNewCommandAsync(commandModel, inputTask.Result.CommandSource);
                     }
-                    else
-                    {
-                        Console.WriteLine("There are no registered command bindings");
-                    }
-
                     inputTask = Task.Run(() => IOHandler.GetInputAsync());
                 }
                 else if (inputTask.IsFaulted)

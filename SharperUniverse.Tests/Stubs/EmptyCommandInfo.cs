@@ -10,10 +10,5 @@ namespace SharperUniverse.Tests.Stubs
         {
             return Task.CompletedTask;
         }
-
-        private Task ExecuteCommandAsync(int index, bool result)
-        {
-            return Task.CompletedTask;
-        }
     }
 }

@@ -7,16 +7,16 @@ namespace SharperUniverse.Example.GuessingGame
 {
     public class ConsoleIOHandler : IIOHandler
     {
-        public Task<(string CommandName, List<string> Args, IUniverseCommandSource CommandSource)> GetInputAsync()
+        public async Task<(string CommandName, List<string> Args, IUniverseCommandSource CommandSource)> GetInputAsync()
         {
-            var input = Console.In.ReadLine();
+            var input = await Console.In.ReadLineAsync();
             var split = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (split.Length >= 2)
             {
-                return Task.FromResult((split[0], new List<string> { split[1] }));
+                return (split[0], new List<string> { split[1] }, new GuessCommandSource(0));
             }
 
-            return Task.FromResult((string.Empty, new List<string>()));
+            return (string.Empty, new List<string>(), new GuessCommandSource(0));
         }
 
         public Task SendOutputAsync(string outputText)

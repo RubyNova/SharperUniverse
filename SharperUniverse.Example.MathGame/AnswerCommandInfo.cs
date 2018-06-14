@@ -1,20 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using SharperUniverse.Core;
 
-namespace SharperUniverse.Example.GuessingGame
+namespace SharperUniverse.Example.MathGame
 {
-    public class GuessCommandInfo : IUniverseCommandInfo
+    public class AnswerCommandInfo : IUniverseCommandInfo
     {
         public int Guess { get; private set; }
 
         public Task ProcessArgsAsync(List<string> args)
         {
-            if (args.Any())
-            {
-                Guess = int.Parse(args.First());
-            }
+            int.TryParse(args[0], out int guess);
+            Guess = guess;
 
             return Task.CompletedTask;
         }

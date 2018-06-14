@@ -6,14 +6,6 @@ namespace SharperUniverse.Tests.Stubs
 {
     public class EmptyCommandInfo : IUniverseCommandInfo
     {
-        private IIOHandler _ioHandler;
-
-        [SharperInject]
-        private void InitializeCommandRequirements(IIOHandler ioHandler)
-        {
-            _ioHandler = ioHandler;
-        }
-
         public Task ProcessArgsAsync(List<string> args)
         {
             return Task.CompletedTask;

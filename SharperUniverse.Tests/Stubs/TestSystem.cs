@@ -9,24 +9,19 @@ namespace SharperUniverse.Tests.Stubs
     {
         private readonly Dictionary<TestComponent, bool> _prevStates;
         private float _updateTime;
-        private EmptySystem _system;
+        private readonly EmptySystem _emptySystem;
 
-        public TestSystem(GameRunner game) : base(game)
+        public TestSystem(GameRunner game, EmptySystem emptySystem) : base(game)
         {
             _prevStates = new Dictionary<TestComponent, bool>();
             ComponentRegistered += OnComponentRegistered;
             ComponentUnRegistered += OnComponentUnRegistered;
-        }
-
-        [SharperInject]
-        private void InjectSharperSystems(EmptySystem emptySys)
-        {
-            _system = emptySys;
+            _emptySystem = emptySystem;
         }
 
         public override Task CycleUpdateAsync(Func<string, Task> outputHandler)
         {
-            _system.TestSwitch = true;
+            _emptySystem.TestSwitch = true;
             if (_updateTime > 1000f)
             {
                 foreach (var comp in Components)

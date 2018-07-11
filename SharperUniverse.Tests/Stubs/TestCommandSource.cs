@@ -2,23 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using SharperUniverse.Core;
+using SharperUniverse.Networking;
 
 namespace SharperUniverse.Tests
 {
-    class TestCommandSource : IUniverseCommandSource
+    class TestCommandSource
     {
-        public int TestIdentifierThing { get; }
+        public ISharperConnection TestConnection { get; }
 
-        public TestCommandSource(int testId)
+        public TestCommandSource(ISharperConnection testConnection)
         {
-            TestIdentifierThing = testId;
-        }
-
-        public bool SourceIsSameAsBindingSource(IUniverseCommandSource bindingSource)
-        {
-            var source = (TestCommandSource)bindingSource;
-
-            return TestIdentifierThing == source.TestIdentifierThing;
+            TestConnection = testConnection;
         }
     }
 }

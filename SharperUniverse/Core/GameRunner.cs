@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using SharperUniverse.Networking;
 using SharperUniverse.Utilities;
 
 namespace SharperUniverse.Core
@@ -16,7 +17,6 @@ namespace SharperUniverse.Core
         internal Dictionary<string, Type> CommandBindings { get; set; }
         internal List<ISharperSystem<BaseSharperComponent>> Systems { get; set; }
         internal List<SharperEntity> Entities { get; set; }
-        internal IIOHandler IOHandler { get; set; }
         internal int DeltaMs { get; set; }
 
         private CancellationTokenSource _cancellationTokenSource;
@@ -63,29 +63,12 @@ namespace SharperUniverse.Core
         /// <returns>A <see cref="Task"/> represnting the asynchronous game loop.</returns>
         public async Task RunGameAsync()
         {
-            Task<(string CommandName, List<string> Args, IUniverseCommandSource CommandSource)> inputTask = Task.Run(() => IOHandler.GetInputAsync());
-            Func<string, Task> outputDel = IOHandler.SendOutputAsync;
             var inputSystem = (SharperInputSystem)Systems.First(x => x is SharperInputSystem);
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
-                if (inputTask.IsCompleted)
-                {
-                    if (CommandBindings.ContainsKey(inputTask.Result.CommandName))
-                    {
-                        var commandModel = (IUniverseCommandInfo)Activator.CreateInstance(CommandBindings[inputTask.Result.CommandName]);
-                        await commandModel.ProcessArgsAsync(inputTask.Result.Args);
-                        await inputSystem.AssignNewCommandAsync(commandModel, inputTask.Result.CommandSource);
-                    }
-                    inputTask = Task.Run(() => IOHandler.GetInputAsync());
-                }
-                else if (inputTask.IsFaulted)
-                {
-                    var exception = inputTask.Exception ?? new Exception("REEEEEEEEEEEEEEEEEEE WTF DID YOU DO TO MY POOR ENGINE???");
-                    throw exception;
-                }
                 foreach (var sharperSystem in Systems)
                 {
-                    await sharperSystem.CycleUpdateAsync(outputDel);
+                    await sharperSystem.CycleUpdateAsync(DeltaMs);
                     var entitiesToDestroy = Entities.Where(x => x.ShouldDestroy).ToList();
                     for (var i = entitiesToDestroy.Count - 1; i > -1; i--)
                     {

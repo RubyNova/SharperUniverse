@@ -36,25 +36,8 @@ namespace SharperUniverse.Core
             return this;
         }
 
-        /// <summary>
-        /// Add a <see cref="IIOHandler"/> to the <see cref="GameRunner"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of <see cref="IIOHandler"/> to add as the input/output handler for this <see cref="GameRunner"/>.</typeparam>
-        /// <returns>A <see cref="SystemBuilder"/>, for building the next phase of the Sharper Universe.</returns>
-        public SystemBuilder AddIOHandler<T>() where T : IIOHandler
+        public SystemBuilder CreateSystem()
         {
-            var ioHandler = Activator.CreateInstance<T>();
-            return AddIOHandler(ioHandler);
-        }
-
-        /// <summary>
-        /// Add a <see cref="IIOHandler"/> to the <see cref="GameRunner"/>.
-        /// </summary>
-        /// <typeparam name="handler">The <see cref="IIOHandler"/> to add as the input/output handler for this <see cref="GameRunner"/>.</typeparam>
-        /// <returns>A <see cref="SystemBuilder"/>, for building the next phase of the Sharper Universe.</returns>
-        public SystemBuilder AddIOHandler(IIOHandler handler)
-        {
-            _game.IOHandler = handler;
             return new SystemBuilder(_game);
         }
     }

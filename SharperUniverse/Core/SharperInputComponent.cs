@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SharperUniverse.Networking;
 
 namespace SharperUniverse.Core
 {
     public class SharperInputComponent : BaseSharperComponent
     {
-        public IUniverseCommandSource BindingSource { get; }
+        public ISharperConnection BindingSource { get; }
         public IUniverseCommandInfo CurrentCommand { get; set; }
 
-        public SharperInputComponent(SharperEntity entity, IUniverseCommandSource bindingSource) : base(entity)
+        public SharperInputComponent(SharperEntity entity, ISharperConnection bindingSource) : base(entity)
         {
             BindingSource = bindingSource;
         }

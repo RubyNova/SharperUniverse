@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharperUniverse.Networking;
+using SharperUniverse.Networking.EventArguments;
 
 namespace SharperUniverse.Core
 {
@@ -14,6 +16,26 @@ namespace SharperUniverse.Core
         public SharperInputSystem(GameRunner game) : base(game)
         {
             ComponentUnRegistered += OnInputComponentUnRegistered;
+            ComponentRegistered += OnInputComponentRegistered;
+        }
+
+        private void OnInputComponentRegistered(object sender, SharperComponentEventArgs e)
+        {
+            var comp = e.SharperComponent as SharperInputComponent;
+            comp.BindingSource.ReceivedMessage += OnInputMessageReceived;
+        }
+
+        private void OnInputMessageReceived(object sender, MessageReceivedArgs e)
+        {
+            var connection = (ISharperConnection)sender;
+            var inputComponent = Components.FirstOrDefault(x => x.BindingSource.Id == connection.Id);
+            var input = e.Message.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries);
+
+            if(!Game.CommandBindings.ContainsKey(input[0])) return;
+
+            var result = Game.CommandBindings[input[0]];
+
+
         }
 
         private void OnInputComponentUnRegistered(object sender, SharperComponentEventArgs e)
@@ -21,24 +43,16 @@ namespace SharperUniverse.Core
             InputEntityDestroyed?.Invoke(this, new SharperEntityEventArgs(e.SharperComponent.Entity));
         }
 
-        public override Task CycleUpdateAsync(Func<string, Task> outputHandler)
+        public override Task CycleUpdateAsync(int deltaMs)
         {
             return Task.CompletedTask;
         }
 
-        public async Task AssignNewCommandAsync(IUniverseCommandInfo commandInfo, IUniverseCommandSource bindingSource)
+        public async Task RegisterNewInputConnectionAsync(ISharperConnection connection)
         {
-            var inputComponent = Components.FirstOrDefault(x => x.BindingSource.SourceIsSameAsBindingSource(bindingSource));
-
-            if (inputComponent == null)
-            {
-                var newEntity = await Game.CreateEntityAsync();
-                NewInputEntityCreated?.Invoke(this, new SharperEntityEventArgs(newEntity));
-                await RegisterComponentAsync(newEntity, bindingSource);
-                inputComponent = Components.First(x => x.BindingSource.SourceIsSameAsBindingSource(bindingSource));
-            }
-
-            inputComponent.CurrentCommand = commandInfo;
+            var newEntity = await Game.CreateEntityAsync();
+            NewInputEntityCreated?.Invoke(this, new SharperEntityEventArgs(newEntity));
+            await RegisterComponentAsync(newEntity, connection);
         }
 
         public Task<Dictionary<SharperEntity, IUniverseCommandInfo>> GetEntitiesByCommandInfoTypesAsync(params Type[] commandTypes)

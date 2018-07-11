@@ -45,9 +45,9 @@ namespace SharperUniverse.Core
         /// <summary>
         /// The logic that runs in an <see cref="ISharperSystem{T}"/> once per update cycle. The update cycle is defined by the <see cref="GameRunner"/> on instantiation.
         /// </summary>
-        /// <param name="outputHandler"></param>
+        /// <param name="deltaMs"></param>
         /// <returns></returns>
-        public abstract Task CycleUpdateAsync(Func<string, Task> outputHandler);
+        public abstract Task CycleUpdateAsync(int deltaMs);
 
         /// <summary>
         /// Registers a component of type <typeparamref name="T"/> and assigns it to the target <see cref="SharperEntity"/>.

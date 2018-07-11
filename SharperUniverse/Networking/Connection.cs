@@ -99,7 +99,6 @@ namespace SharperUniverse.Networking
             }
             catch (Exception)
             {
-                // TODO: Remove this from the server its references
                 Disconnect();
             }
         }

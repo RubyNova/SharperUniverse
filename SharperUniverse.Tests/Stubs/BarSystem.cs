@@ -13,7 +13,7 @@ namespace SharperUniverse.Tests.Stubs
             TestSwitch = false;
         }
 
-        public override Task CycleUpdateAsync(Func<string, Task> outputHandler)
+        public override Task CycleUpdateAsync(int deltaMs)
         {
             return Task.CompletedTask;
         }

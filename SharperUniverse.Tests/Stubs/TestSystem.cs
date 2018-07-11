@@ -19,7 +19,7 @@ namespace SharperUniverse.Tests.Stubs
             _emptySystem = emptySystem;
         }
 
-        public override Task CycleUpdateAsync(Func<string, Task> outputHandler)
+        public override Task CycleUpdateAsync(int deltaMs)
         {
             _emptySystem.TestSwitch = true;
             if (_updateTime > 1000f)

@@ -27,22 +27,6 @@ namespace SharperUniverse.Tests
             });
         };
 
-        [SetUp]
-        public void SetUp()
-        {
-            _ioHandler = Substitute.For<IIOHandler>();
-
-            var tuple = ("test", new List<string>(), new TestCommandSource());
-            _ioHandler.GetInputAsync().Returns(Task.FromResult(tuple));
-            _ioHandler.SendOutputAsync(Arg.Any<string>()).Returns(Task.CompletedTask);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            _ioHandler = null;
-        }
-
         [Test]
         public void CanDoBasicBuilderConstruction()
         {
@@ -53,6 +37,8 @@ namespace SharperUniverse.Tests
                 .ComposeSystems()
                 .AddEntity().WithComponent<EmptyComponent>()
                 .ComposeEntities()
+                .SetupNetwork()
+                .DefaultServer(4000)
                 .Build();
 
             _runQuickGame(builder);
@@ -103,6 +89,8 @@ namespace SharperUniverse.Tests
                 .AddEntity()
                 .AddEntity()
                 .ComposeEntities()
+                .SetupNetwork()
+                .DefaultServer(4000)
                 .Build();
 
             _runQuickGame(builder);
@@ -119,6 +107,8 @@ namespace SharperUniverse.Tests
                 .ComposeSystems()
                 .AddEntity().WithComponent<TestComponent>(true).WithComponent<EmptyComponent>()
                 .ComposeEntities()
+                .SetupNetwork()
+                .DefaultServer(4000)
                 .Build();
 
             _runQuickGame(builder);
@@ -138,6 +128,8 @@ namespace SharperUniverse.Tests
                 .AddEntity().WithComponent<FooBarComponent>()
                 .AddEntity().WithComponent<FooComponent>()
                 .ComposeEntities()
+                .SetupNetwork()
+                .DefaultServer(4000)
                 .Build();
 
             _runQuickGame(builder);

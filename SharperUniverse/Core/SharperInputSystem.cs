@@ -28,9 +28,7 @@ namespace SharperUniverse.Core
 
         private void OnClientDisconnected(object sender, ClientDisconnectedArgs e)
         {
-            // TODO: destroy everything related to this connection
-            // All yours ruby
-            throw new NotImplementedException();
+            Components.First(x => x.BindingSource.Id == e.Id).Entity.ShouldDestroy = true;
         }
 
         private void OnInputMessageReceived(object sender, MessageReceivedArgs e)

@@ -10,6 +10,8 @@ namespace SharperUniverse.TestClient
     {
         private static TcpClient _client;
         private static NetworkStream _stream;
+        private static Task _inputTask;
+        private static Task _outputTask;
 
         static async Task Main(string[] args)
         {
@@ -19,8 +21,17 @@ namespace SharperUniverse.TestClient
 
             while (true)
             {
-                Task.Run(() => GetInputAsync());
-                Task.Run(() => GetOutputAsync());
+                if (_inputTask == null || _inputTask.IsCompleted)
+                {
+                    _inputTask = Task.Run(() => GetInputAsync());
+                }
+
+                if (_outputTask == null || _outputTask.IsCompleted)
+                {
+                    _outputTask = Task.Run(() => GetOutputAsync());
+                }
+
+                Task.Delay(100);
             }
         }
 

@@ -63,6 +63,11 @@ namespace SharperUniverse.Core
             return Task.FromResult(componentsResult.ToDictionary(x => x.Entity, y => y.CurrentCommand));
         }
 
+        public ISharperConnection GetConnectionByEntity(SharperEntity entity)
+        {
+            return Components.First(x => x.Entity == entity).BindingSource;
+        }
+
         public Task CycleCommandFlushAsync()
         {
             foreach (var inputComponent in Components)

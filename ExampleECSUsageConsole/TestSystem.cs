@@ -25,14 +25,15 @@ namespace ExampleECSUsageConsole
             RegisterComponentAsync(Game.CreateEntityAsync().GetAwaiter().GetResult(), false, e.Entity).GetAwaiter().GetResult();
         }
 
-        public override async Task CycleUpdateAsync(Func<string, Task> outputHandler)
+        public override async Task CycleUpdateAsync(int deltaMs)
         {
             await ResolveCommandsAsync(await _inputSystem.GetEntitiesByCommandInfoTypesAsync(typeof(TestCommandInfo)));
             foreach (var comp in Components)
             {
                 if (comp.State !=_prevStates[comp])
                 {
-                    await outputHandler.Invoke($"state is now {comp.State}");
+                    var connection = _inputSystem.GetConnectionByEntity(comp.OwnerEntity);
+                    connection.Send($"State is now {comp.State}");
                 }
                 _prevStates[comp] = comp.State;
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using SharperUniverse.Networking.EventArguments;
 
 namespace SharperUniverse.Networking
 {
@@ -9,7 +10,7 @@ namespace SharperUniverse.Networking
 
         ConcurrentBag<ISharperConnection> Connections { get; }
 
-        event EventHandler NewConnectionMade;
+        event EventHandler<NewConnectionArgs> NewConnectionMade;
 
         bool Start();
 

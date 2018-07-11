@@ -13,7 +13,7 @@ namespace SharperUniverse.Networking
 
         public ConcurrentBag<ISharperConnection> Connections { get; private set; }
 
-        public event EventHandler NewConnectionMade;
+        public event EventHandler<NewConnectionArgs> NewConnectionMade;
         
         private Socket _mainSocket;
 

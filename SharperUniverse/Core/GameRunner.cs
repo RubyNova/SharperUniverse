@@ -63,7 +63,7 @@ namespace SharperUniverse.Core
         public async Task RunGameAsync()
         {
             var inputSystem = (SharperInputSystem)Systems.First(x => x is SharperInputSystem);
-            Server.NewConnectionMade += inputSystem.RegisterNewInputConnectionAsync;
+            Server.NewConnectionMade += inputSystem.OnNewInputConnectionAsync;
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
                 foreach (var sharperSystem in Systems)

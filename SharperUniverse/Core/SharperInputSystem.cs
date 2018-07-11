@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SharperUniverse.Networking;
 using SharperUniverse.Networking.EventArguments;
+using SharperUniverse.Utilities;
 
 namespace SharperUniverse.Core
 {
@@ -32,7 +33,10 @@ namespace SharperUniverse.Core
 
             if(!Game.CommandBindings.ContainsKey(input[0])) return;
 
-            var result = Game.CommandBindings[input[0]];
+            var resultType = Game.CommandBindings[input[0]];
+
+            var resultInfo = (IUniverseCommandInfo)Activator.CreateInstance(resultType);
+            resultInfo.ProcessArgsAsync(input.SubArray(1, input.Length - 1).ToList());
         }
 
         private void OnInputComponentUnRegistered(object sender, SharperComponentEventArgs e)
@@ -45,7 +49,7 @@ namespace SharperUniverse.Core
             return Task.CompletedTask;
         }
 
-        public async Task RegisterNewInputConnectionAsync(object sender, NewConnectionArgs e)
+        public async void OnNewInputConnectionAsync(object sender, NewConnectionArgs e)
         {
             var newEntity = await Game.CreateEntityAsync();
             NewInputEntityCreated?.Invoke(this, new SharperEntityEventArgs(newEntity));

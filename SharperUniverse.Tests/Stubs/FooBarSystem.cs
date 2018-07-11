@@ -21,7 +21,7 @@ namespace SharperUniverse.Tests.Stubs
             _empty = empty;
         }
 
-        public override Task CycleUpdateAsync(Func<string, Task> outputHandler)
+        public override Task CycleUpdateAsync(int deltaMs)
         {
             return Task.CompletedTask;
         }

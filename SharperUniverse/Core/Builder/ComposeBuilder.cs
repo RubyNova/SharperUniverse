@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SharperUniverse.Core.Builder
+{
+    /// <summary>
+    /// A final builder exposing the exeuction of a Sharper Universe game.
+    /// </summary>
+    public class ComposeBuilder
+    {
+        private readonly GameRunner _game;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComposeBuilder"/> class.
+        /// </summary>
+        /// <param name="game">The <see cref="GameRunner"/> being built by this <see cref="GameBuilder"/>.</param>
+        internal ComposeBuilder(GameRunner game)
+        {
+            _game = game;
+        }
+
+        /// <summary>
+        /// Starts a Sharper Universe game.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing this <see cref="GameRunner"/> execution.</returns>
+        public async Task StartGameAsync()
+        {
+            _game.Server.Start();
+            await _game.RunGameAsync();
+        }
+    }
+}

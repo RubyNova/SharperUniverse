@@ -34,8 +34,6 @@ namespace SharperUniverse.Core
             if(!Game.CommandBindings.ContainsKey(input[0])) return;
 
             var result = Game.CommandBindings[input[0]];
-
-
         }
 
         private void OnInputComponentUnRegistered(object sender, SharperComponentEventArgs e)
@@ -48,11 +46,11 @@ namespace SharperUniverse.Core
             return Task.CompletedTask;
         }
 
-        public async Task RegisterNewInputConnectionAsync(ISharperConnection connection)
+        public async Task RegisterNewInputConnectionAsync(object sender, NewConnectionArgs e)
         {
             var newEntity = await Game.CreateEntityAsync();
             NewInputEntityCreated?.Invoke(this, new SharperEntityEventArgs(newEntity));
-            await RegisterComponentAsync(newEntity, connection);
+            await RegisterComponentAsync(newEntity, e.Connection);
         }
 
         public Task<Dictionary<SharperEntity, IUniverseCommandInfo>> GetEntitiesByCommandInfoTypesAsync(params Type[] commandTypes)

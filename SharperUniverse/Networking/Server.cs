@@ -9,9 +9,9 @@ using SharperUniverse.Networking.EventArguments;
 
 namespace SharperUniverse.Networking
 {
-    internal class Server
+    internal class Server : ISharperServer
     {
-        public int Port { get; private set; }
+        public int Port { get; }
 
         public ConcurrentBag<ISharperConnection> Connections { get; private set; }
 

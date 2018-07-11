@@ -50,8 +50,7 @@ namespace SharperUniverse.Networking
             if (messageLength == 0) Disconnect();
 
             var data = ParseData();
-
-            // TODO: Create new eventarg for ReceivedMessage that contains the message received.
+            
             if (!string.IsNullOrEmpty(data)) ReceivedMessage?.Invoke(this, new MessageReceivedArgs(data));
 
             ListenForData();

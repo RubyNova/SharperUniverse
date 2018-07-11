@@ -17,9 +17,10 @@ namespace SharperUniverse.Core
         internal Dictionary<string, Type> CommandBindings { get; set; }
         internal List<ISharperSystem<BaseSharperComponent>> Systems { get; set; }
         internal List<SharperEntity> Entities { get; set; }
+        internal ISharperServer Server { get; set; }
         internal int DeltaMs { get; set; }
 
-        private CancellationTokenSource _cancellationTokenSource;
+        private readonly CancellationTokenSource _cancellationTokenSource;
 
         internal GameRunner()
         {
@@ -64,6 +65,7 @@ namespace SharperUniverse.Core
         public async Task RunGameAsync()
         {
             var inputSystem = (SharperInputSystem)Systems.First(x => x is SharperInputSystem);
+            Server.NewConnectionMade += inputSystem.RegisterNewInputConnectionAsync;
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
                 foreach (var sharperSystem in Systems)

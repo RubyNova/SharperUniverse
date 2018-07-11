@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NSubstitute;
 using NUnit.Framework;
 using SharperUniverse.Core;
+using SharperUniverse.Core.Builder;
 using SharperUniverse.Networking;
 using SharperUniverse.Tests.Stubs;
 
@@ -79,6 +80,8 @@ namespace SharperUniverse.Tests
                 .ComposeSystems()
                 .AddEntity().WithComponent<EmptyComponent>()
                 .ComposeEntities()
+                .SetupNetwork()
+                .DefaultServer(4000)
                 .Build();
 
             _runQuickGame(builder);

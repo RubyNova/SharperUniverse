@@ -37,6 +37,9 @@ namespace SharperUniverse.Core
 
             var resultInfo = (IUniverseCommandInfo)Activator.CreateInstance(resultType);
             resultInfo.ProcessArgsAsync(input.SubArray(1, input.Length - 1).ToList());
+            inputComponent.CurrentCommand = resultInfo;
+
+
         }
 
         private void OnInputComponentUnRegistered(object sender, SharperComponentEventArgs e)

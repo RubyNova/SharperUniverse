@@ -23,6 +23,14 @@ namespace SharperUniverse.Core
         {
             var comp = e.SharperComponent as SharperInputComponent;
             comp.BindingSource.ReceivedMessage += OnInputMessageReceived;
+            comp.BindingSource.ClientDisconnected += OnClientDisconnected;
+        }
+
+        private void OnClientDisconnected(object sender, ClientDisconnectedArgs e)
+        {
+            // TODO: destroy everything related to this connection
+            // All yours ruby
+            throw new NotImplementedException();
         }
 
         private void OnInputMessageReceived(object sender, MessageReceivedArgs e)
@@ -38,8 +46,6 @@ namespace SharperUniverse.Core
             var resultInfo = (IUniverseCommandInfo)Activator.CreateInstance(resultType);
             resultInfo.ProcessArgsAsync(input.SubArray(1, input.Length - 1).ToList());
             inputComponent.CurrentCommand = resultInfo;
-
-
         }
 
         private void OnInputComponentUnRegistered(object sender, SharperComponentEventArgs e)

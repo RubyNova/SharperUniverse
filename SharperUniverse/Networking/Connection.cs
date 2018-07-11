@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using SharperUniverse.Networking.EventArguments;
 
 namespace SharperUniverse.Networking
@@ -14,15 +15,12 @@ namespace SharperUniverse.Networking
 
         public event EventHandler<MessageReceivedArgs> ReceivedMessage;
 
+        public event EventHandler<ClientDisconnectedArgs> ClientDisconnected; 
+
         public Connection(Socket socket)
         {
             _socket = socket;
             Id = new Guid();
-        }
-
-        public void Send(byte[] data)
-        {
-            _socket.BeginSend(data, 0, data.Length, SocketFlags.None, OnSendComplete, null);
         }
 
         public void Send(string data)
@@ -30,29 +28,80 @@ namespace SharperUniverse.Networking
             Send(Encoding.ASCII.GetBytes(data));
         }
 
+        public void Send(byte[] data)
+        {
+            try
+            {
+                _socket.BeginSend(data, 0, data.Length, SocketFlags.None, OnSendComplete, null);
+            }
+            catch (SocketException)
+            {
+                Disconnect();
+            }
+            catch (ObjectDisposedException)
+            {
+                Disconnect();
+            }
+        }
+
         public void ListenForData()
         {
-            _socket.BeginReceive(Data, 0, Data.Length, SocketFlags.None, OnDataReceived, null);
+            try
+            {
+                _socket.BeginReceive(Data, 0, Data.Length, SocketFlags.None, OnDataReceived, null);
+            }
+            catch (SocketException)
+            {
+                Disconnect();
+            }
         }
 
         private void OnSendComplete(IAsyncResult asyncResult)
         {
-            _socket.EndSend(asyncResult);
+            try
+            {
+                _socket.EndSend(asyncResult);
+            }
+            catch
+            {
+                Disconnect();
+            }
         }
 
         private void OnDataReceived(IAsyncResult asyncResult)
         {
-            if (!_socket.Connected) return;
+            try
+            {
 
-            var messageLength = _socket.EndReceive(asyncResult);
 
-            if (messageLength == 0) Disconnect();
+                if (!_socket.Connected) return;
 
-            var data = ParseData(messageLength);
-            
-            if (!string.IsNullOrEmpty(data)) ReceivedMessage?.Invoke(this, new MessageReceivedArgs(data));
 
-            ListenForData();
+                var messageLength = _socket.EndReceive(asyncResult);
+
+                if (messageLength == 0) Disconnect();
+
+                var data = ParseData(messageLength);
+
+                if (!string.IsNullOrEmpty(data)) ReceivedMessage?.Invoke(this, new MessageReceivedArgs(data));
+
+                ListenForData();
+            }
+            // If we're shutting down, quietly ignore these exceptions and try to close the connection.
+            catch (ObjectDisposedException)
+            {
+                Disconnect();
+            }
+            // If we're shutting down, quietly ignore these exceptions and try to close the connection.
+            catch (ThreadAbortException)
+            {
+                Disconnect();
+            }
+            catch (Exception)
+            {
+                // TODO: Remove this from the server its references
+                Disconnect();
+            }
         }
         
         private string ParseData(int messageLength)
@@ -101,6 +150,8 @@ namespace SharperUniverse.Networking
 
             _socket.Shutdown(SocketShutdown.Both);
             _socket.Close();
+
+            ClientDisconnected?.Invoke(this, new ClientDisconnectedArgs(Id));
         }
     }
 }

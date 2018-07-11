@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using SharperUniverse.Networking.EventArguments;
@@ -55,11 +54,46 @@ namespace SharperUniverse.Networking
 
             ListenForData();
         }
-
+        
         private string ParseData()
         {
-            // TODO: implement protocol parsing here
-            return "";
+            var message = new StringBuilder();
+
+            for (var index = 0; index < Data.Length; index++)
+            {
+                var firstBit = Data[index];
+                switch (firstBit)
+                {
+                    case (byte)TelnetVerbs.Iac:
+                        // interpret as command
+                        var secondBit = Data[++index];
+                        switch (secondBit)
+                        {
+                            case (byte)TelnetVerbs.Iac:
+                                //literal IAC = 255 escaped, so append char 255 to string
+                                message.Append(secondBit);
+                                break;
+                            case (byte)TelnetVerbs.Do:
+                            case (byte)TelnetVerbs.Dont:
+                            case (byte)TelnetVerbs.Will:
+                            case (byte)TelnetVerbs.Wont:
+                                // reply to all commands with "WONT"
+                                var thirdBit = Data[++index];
+                                var response = secondBit == (byte)TelnetVerbs.Do ? (byte)TelnetVerbs.Wont : (byte)TelnetVerbs.Dont;
+
+                                if (thirdBit == 3) response = secondBit == (byte)TelnetVerbs.Do ? (byte)TelnetVerbs.Will : (byte)TelnetVerbs.Do;
+
+                                Send(new []{ (byte)TelnetVerbs.Iac , response, thirdBit });
+                                break;
+                        }
+                        break;
+                    default:
+                        message.Append((char)firstBit);
+                        break;
+                }
+            }
+            
+            return message.ToString();
         }
 
         public void Disconnect()

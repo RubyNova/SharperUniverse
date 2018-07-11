@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SharperUniverse.Core.Builder
+﻿namespace SharperUniverse.Core.Builder
 {
 
     /// <summary>

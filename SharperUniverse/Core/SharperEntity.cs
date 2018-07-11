@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace SharperUniverse.Core
+﻿namespace SharperUniverse.Core
 {
     /// <summary>
     /// The type that represents all entites within a game. This class cannot be inherited. It should not be instantiated directly. Instead, call <see cref="GameRunner.CreateEntityAsync"/> to get a new <see cref="SharperEntity"/>.

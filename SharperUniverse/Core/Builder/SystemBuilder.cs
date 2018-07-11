@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using SharperUniverse.Utilities;
 
 namespace SharperUniverse.Core.Builder

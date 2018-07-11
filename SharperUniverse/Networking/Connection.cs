@@ -48,18 +48,18 @@ namespace SharperUniverse.Networking
 
             if (messageLength == 0) Disconnect();
 
-            var data = ParseData();
+            var data = ParseData(messageLength);
             
             if (!string.IsNullOrEmpty(data)) ReceivedMessage?.Invoke(this, new MessageReceivedArgs(data));
 
             ListenForData();
         }
         
-        private string ParseData()
+        private string ParseData(int messageLength)
         {
             var message = new StringBuilder();
 
-            for (var index = 0; index < Data.Length; index++)
+            for (var index = 0; index < messageLength; index++)
             {
                 var firstBit = Data[index];
                 switch (firstBit)
@@ -92,8 +92,7 @@ namespace SharperUniverse.Networking
                         break;
                 }
             }
-            
-            return message.ToString();
+            return message.Length > 0 ? message.ToString() : "";
         }
 
         public void Disconnect()

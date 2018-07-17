@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using SharperUniverse.Logging;
 
 namespace SharperUniverse.Core.Builder
 {
@@ -24,6 +25,7 @@ namespace SharperUniverse.Core.Builder
         /// <returns>A <see cref="Task"/> representing this <see cref="GameRunner"/> execution.</returns>
         public async Task StartGameAsync()
         {
+            ServerLog.LogInfo("Game server now launching...");
             _game.Server.Start();
             await _game.RunGameAsync();
         }

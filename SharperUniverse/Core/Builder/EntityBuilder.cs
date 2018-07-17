@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SharperUniverse.Logging;
 
 namespace SharperUniverse.Core.Builder
 {
@@ -17,6 +18,7 @@ namespace SharperUniverse.Core.Builder
         /// <param name="game">The <see cref="GameRunner"/> being built by this <see cref="GameBuilder"/>.</param>
         internal EntityBuilder(GameRunner game)
         {
+            ServerLog.LogInfo("Composing initially predefined entities...");
             _game = game;
             _entities = new List<SharperEntity>();
         }
@@ -27,6 +29,7 @@ namespace SharperUniverse.Core.Builder
         /// <returns>An <see cref="EntityBuilder"/>, for adding multiple <see cref="SharperEntity"/> or <see cref="BaseSharperComponent"/> to the Sharper Universe.</returns>
         public EntityBuilder AddEntity()
         {
+            ServerLog.LogInfo("Creating new SharperEntity...");
             _entities.Add(new SharperEntity());
             return this;
         }
@@ -40,6 +43,7 @@ namespace SharperUniverse.Core.Builder
         /// <remarks>Even if your <see cref="BaseSharperComponent"/> takes a <see cref="SharperEntity"/> as its first parameter, do not add it to the <paramref name="args"/> array. It is automatically provided for you. Only add parameters beyond the <see cref="SharperEntity"/> to <paramref name="args"/>.</remarks>
         public EntityBuilder WithComponent<T>(params object[] args) where T : BaseSharperComponent
         {
+            ServerLog.LogInfo($"Attempting to add component to SharperEntity of type {typeof(T).FullName}");
             foreach (var system in _game.Systems)
             {
                 var componentToMatch = system.GetType().BaseType.GetGenericArguments().SingleOrDefault(c => c.ToString().Equals(typeof(T).ToString()));
@@ -63,6 +67,7 @@ namespace SharperUniverse.Core.Builder
         /// <returns>An <see cref="EntityBuilder"/>, for adding multiple <see cref="SharperEntity"/> or <see cref="BaseSharperComponent"/> to the Sharper Universe.</returns>
         public EntityBuilder ComposeEntities()
         {
+            ServerLog.LogInfo("Entities composed.");
             // TODO: Probably should add a bool class member to track whether this method has been called or not
             //  If it has been called, then set the member to true, and check its true-ness in the other creation methods in this class
             //  We return an EntityBuilder here for convenience, in-case they don't want to add an OptionsBuilder

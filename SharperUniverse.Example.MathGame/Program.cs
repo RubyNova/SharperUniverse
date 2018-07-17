@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SharperUniverse.Core;
+using SharperUniverse.Core.Builder;
 
 namespace SharperUniverse.Example.MathGame
 {
@@ -10,10 +10,12 @@ namespace SharperUniverse.Example.MathGame
             var builder = new GameBuilder()
                 .AddCommand<ExitCommandInfo>("exit")
                 .AddCommand<AnswerCommandInfo>("a")
-                .AddIOHandler<ConsoleIOHandler>()
+                .CreateSystem()
                 .AddSystem<MathGameSystem>()
                 .ComposeSystems()
                 .ComposeEntities()
+                .SetupNetwork()
+                .DefaultServer(23)
                 .Build();
 
             await builder.StartGameAsync();

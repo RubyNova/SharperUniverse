@@ -1,30 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>latest</LangVersion>
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\SharperUniverse.xml</DocumentationFile>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Core\.gitkeep" />
     <None Remove="Networking\.gitkeep" />
     <None Remove="Persistence\.gitkeep" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Persistence\" />
   </ItemGroup>
-
   <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.7.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Telnet" Version="0.8.0" />
   </ItemGroup>
-
 </Project>

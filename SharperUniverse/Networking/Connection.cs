@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
+using SharperUniverse.Logging;
 using SharperUniverse.Networking.EventArguments;
 
 namespace SharperUniverse.Networking
@@ -151,6 +154,7 @@ namespace SharperUniverse.Networking
             _socket.Close();
 
             ClientDisconnected?.Invoke(this, new ClientDisconnectedArgs(Id));
+            ServerLog.LogInfo($"client at {((IPEndPoint)_socket.RemoteEndPoint).Address} Disconnected from game server {Assembly.GetCallingAssembly().GetName().Name}.");
         }
     }
 }

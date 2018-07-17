@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleECSUsageConsole", "E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharperUniverse.Tests", "SharperUniverse.Tests\SharperUniverse.Tests.csproj", "{58928961-65C1-4790-82A3-1B5BAE326378}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharperUniverse.Example.MathGame", "SharperUniverse.Example.MathGame\SharperUniverse.Example.MathGame.csproj", "{52CA85B6-ED45-4ADC-9791-AF07361BB97B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharperUniverse.TestClient", "SharperUniverse.TestClient\SharperUniverse.TestClient.csproj", "{800E56FF-C8E7-40FC-9177-18F8DC52AE00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharperUniverse.Example.MathGame", "SharperUniverse.Example.MathGame\SharperUniverse.Example.MathGame.csproj", "{416C07AE-7671-402D-981B-180A56117EFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,14 +31,14 @@ Global
 		{58928961-65C1-4790-82A3-1B5BAE326378}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58928961-65C1-4790-82A3-1B5BAE326378}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58928961-65C1-4790-82A3-1B5BAE326378}.Release|Any CPU.Build.0 = Release|Any CPU
-		{52CA85B6-ED45-4ADC-9791-AF07361BB97B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52CA85B6-ED45-4ADC-9791-AF07361BB97B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52CA85B6-ED45-4ADC-9791-AF07361BB97B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52CA85B6-ED45-4ADC-9791-AF07361BB97B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{800E56FF-C8E7-40FC-9177-18F8DC52AE00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{800E56FF-C8E7-40FC-9177-18F8DC52AE00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{800E56FF-C8E7-40FC-9177-18F8DC52AE00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{800E56FF-C8E7-40FC-9177-18F8DC52AE00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{416C07AE-7671-402D-981B-180A56117EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{416C07AE-7671-402D-981B-180A56117EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{416C07AE-7671-402D-981B-180A56117EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{416C07AE-7671-402D-981B-180A56117EFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

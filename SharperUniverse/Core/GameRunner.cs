@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SharperUniverse.Logging;
 using SharperUniverse.Networking;
 
 namespace SharperUniverse.Core
@@ -64,6 +65,7 @@ namespace SharperUniverse.Core
         {
             var inputSystem = (SharperInputSystem)Systems.First(x => x is SharperInputSystem);
             Server.NewConnectionMade += inputSystem.OnNewInputConnectionAsync;
+            ServerLog.LogInfo("Server launch successful.");
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
                 foreach (var sharperSystem in Systems)

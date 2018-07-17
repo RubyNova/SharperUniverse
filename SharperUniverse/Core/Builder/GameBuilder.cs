@@ -1,4 +1,8 @@
-﻿namespace SharperUniverse.Core.Builder
+﻿using System.Reflection;
+using Serilog;
+using SharperUniverse.Logging;
+
+namespace SharperUniverse.Core.Builder
 {
     /// <summary>
     /// The builder for a Sharper Universe <see cref="GameRunner"/>.
@@ -12,6 +16,7 @@
         /// </summary>
         public GameBuilder()
         {
+            ServerLog.LogInfo($"Game server {Assembly.GetCallingAssembly().GetName().Name} is now building...");
             // Prime our game runner, and add to it as we construct the builder
             _game = new GameRunner();
         }
@@ -24,6 +29,7 @@
         /// <returns>An <see cref="IOHandlerBuilder"/>, for building the next phase of the Sharper Universe.</returns>
         public GameBuilder AddCommand<T>(string name) where T : IUniverseCommandInfo
         {
+            ServerLog.LogInfo($"Adding command type {typeof(T).FullName} with assigned name of \"{name}\"");
             _game.CommandBindings.Add(name, typeof(T));
 
             return this;
@@ -31,6 +37,7 @@
 
         public SystemBuilder CreateSystem()
         {
+            ServerLog.LogInfo("Beginning System composition...");
             return new SystemBuilder(_game);
         }
     }

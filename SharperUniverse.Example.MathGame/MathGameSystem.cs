@@ -19,6 +19,7 @@ namespace SharperUniverse.Example.MathGame
         private Random _random;
         private int _guess;
         private int _answer;
+        private SharperEntity _inputEntity;
 
         public MathGameSystem(GameRunner game, SharperInputSystem input) : base(game)
         {
@@ -29,10 +30,11 @@ namespace SharperUniverse.Example.MathGame
             _input.NewInputEntityCreated += async (s, e) =>
             {
                 await RegisterComponentAsync(await Game.CreateEntityAsync(), e.Entity);
+                _inputEntity = e.Entity;
             };
         }
 
-        public override async Task CycleUpdateAsync(Func<string, Task> outputHandler)
+        public override async Task CycleUpdateAsync(int deltaMs)
         {
             var commands = await _input.GetEntitiesByCommandInfoTypesAsync(typeof(ExitCommandInfo), typeof(AnswerCommandInfo));
             foreach (var command in commands)
@@ -40,10 +42,11 @@ namespace SharperUniverse.Example.MathGame
                 switch (command.Value)
                 {
                     case ExitCommandInfo _:
-                        _game.StopGame();
+                        _input.GetConnectionByEntity(command.Key).Disconnect();
                         break;
                     case AnswerCommandInfo a:
                         _guess = a.Guess;
+                        _inputEntity = command.Key;
                         _gameState = GameState.Answer;
 
                         var commandEntityContext = command.Key;
@@ -58,18 +61,28 @@ namespace SharperUniverse.Example.MathGame
             switch (_gameState)
             {
                 case GameState.Question:
-                    var left = _random.Next(1, 10);
-                    var right = _random.Next(1, 10);
-                    _answer = left + right;
-                    await outputHandler.Invoke($"{left} + {right}");
-                    _gameState = GameState.Answer;
+
+                    //await outputHandler.Invoke($"{left} + {right}");
+                    if (_inputEntity != null)
+                    {
+                        var left = _random.Next(1, 10);
+                        var right = _random.Next(1, 10);
+                        _answer = left + right;
+                        _input.GetConnectionByEntity(_inputEntity).Send($"{left} + {right}");
+                        _gameState = GameState.Answer;
+                    }
+                    else
+                    {
+                        
+                    }
                     break;
                 case GameState.Answer:
                     if (_guess == _answer)
                     {
                         _guess = -1;
-                        await outputHandler.Invoke("Correct!\n");
+                        //await outputHandler.Invoke("Correct!\n");
                         _gameState = GameState.Question;
+                        _input.GetConnectionByEntity(_inputEntity).Send($"Correct!");
                     }
                     break;
             }

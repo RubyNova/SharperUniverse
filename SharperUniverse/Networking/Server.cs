@@ -2,7 +2,9 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading.Tasks;
+using SharperUniverse.Logging;
 using SharperUniverse.Networking.EventArguments;
 
 namespace SharperUniverse.Networking
@@ -67,6 +69,7 @@ namespace SharperUniverse.Networking
         {
             // Stop accepting new connections and creat a specific connection for the client.
             var socket = _mainSocket.EndAccept(asyncResult);
+
             ISharperConnection connection = new Connection(socket);
 
             Connections.TryAdd(connection.Id, connection);
@@ -76,7 +79,7 @@ namespace SharperUniverse.Networking
             connection.ListenForData();
 
             NewConnectionMade?.Invoke(this, new NewConnectionArgs(connection));
-
+            ServerLog.LogInfo($"Client {((IPEndPoint)socket.RemoteEndPoint).Address} now connected to server running {Assembly.GetCallingAssembly().GetName().Name}.");
             // Start accepting new connections again.
             _mainSocket.BeginAccept(OnClientConnect, null);
         }

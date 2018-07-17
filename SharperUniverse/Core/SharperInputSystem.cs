@@ -37,7 +37,12 @@ namespace SharperUniverse.Core
             var inputComponent = Components.FirstOrDefault(x => x.BindingSource.Id == connection.Id);
             var input = e.Message.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries);
 
-            if(!Game.CommandBindings.ContainsKey(input[0])) return;
+            if(!Game.CommandBindings.ContainsKey(input[0]))
+            {
+                var conn = (ISharperConnection) sender;
+                conn.Send($"No command called {input[0]} exists.");
+                return;
+            }
 
             var resultType = Game.CommandBindings[input[0]];
 

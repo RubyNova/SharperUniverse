@@ -71,10 +71,6 @@ namespace SharperUniverse.Example.MathGame
                         _input.GetConnectionByEntity(_inputEntity).Send($"{left} + {right}");
                         _gameState = GameState.Answer;
                     }
-                    else
-                    {
-                        
-                    }
                     break;
                 case GameState.Answer:
                     if (_guess == _answer)

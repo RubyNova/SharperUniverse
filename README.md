@@ -28,11 +28,11 @@ Foo();
 
 ## Contributors
 
-* [RubyNova](https://github.com/RubyNova) - Lead maintainer
+* [RubyNova](https://github.com/RubyNova) - Lead maintainer.
 * [AlmightyThud](https://github.com/JasonHughes94)
-* [Ryada](https://github.com/ryadaproductions)
+* [Ryada](https://github.com/ryadaproductions) - Maintainer of the telnet netcode.
 * [kscarlett](https://github.com/kscarlett)
-* [mariocatch](https://github.com/mariocatch) - Contributed the SharperUniverse fluent builder system
+* [mariocatch](https://github.com/mariocatch) - Contributed the SharperUniverse fluent builder system.
 
 If you want to help out with the project, take a look at the [contribution guidelines](CONTRIBUTING.md).
 

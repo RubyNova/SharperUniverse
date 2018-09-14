@@ -2,7 +2,9 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading.Tasks;
+using SharperUniverse.Logging;
 using SharperUniverse.Networking.EventArguments;
 
 namespace SharperUniverse.Networking
@@ -11,11 +13,13 @@ namespace SharperUniverse.Networking
     {
         public int Port { get; }
 
-        public ConcurrentBag<ISharperConnection> Connections { get; private set; }
+        public ConcurrentDictionary<Guid, ISharperConnection> Connections { get; private set; }
 
         public event EventHandler<NewConnectionArgs> NewConnectionMade;
-        
+
         private Socket _mainSocket;
+
+        private bool _isRunning;
 
         public Server(int port = 23)
         {
@@ -24,25 +28,37 @@ namespace SharperUniverse.Networking
 
         public bool Start()
         {
-            Connections = new ConcurrentBag<ISharperConnection>();
+            if (_isRunning) return false;
+            _isRunning = true;
 
-            _mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            var localIp = new IPEndPoint(IPAddress.Any, Port);
+            try
+            {
+                Connections = new ConcurrentDictionary<Guid, ISharperConnection>();
+                
+                _mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                var localIp = new IPEndPoint(IPAddress.Any, Port);
 
-            _mainSocket.Bind(localIp);
+                _mainSocket.Bind(localIp);
 
-            _mainSocket.Listen(4);
+                _mainSocket.Listen(4);
 
-            _mainSocket.BeginAccept(OnClientConnect, null);
+                _mainSocket.BeginAccept(OnClientConnect, null);
 
-            return true;
+                return true;
+            }
+            catch (SocketException)
+            {
+                return false;
+            }
         }
 
         public void Stop()
         {
+            if (!_isRunning) return;
+
             _mainSocket?.Close();
 
-            Parallel.ForEach(Connections, connection =>
+            Parallel.ForEach(Connections.Values, connection =>
             {
                 connection.Send("Server is closing down!");
                 connection.Disconnect();
@@ -53,15 +69,24 @@ namespace SharperUniverse.Networking
         {
             // Stop accepting new connections and creat a specific connection for the client.
             var socket = _mainSocket.EndAccept(asyncResult);
+
             ISharperConnection connection = new Connection(socket);
-            Connections.Add(connection);
+
+            Connections.TryAdd(connection.Id, connection);
+
+            connection.ClientDisconnected += ClientDisconnected;
 
             connection.ListenForData();
 
             NewConnectionMade?.Invoke(this, new NewConnectionArgs(connection));
-
+            ServerLog.LogInfo($"Client {((IPEndPoint)socket.RemoteEndPoint).Address} now connected to server running {Assembly.GetCallingAssembly().GetName().Name}.");
             // Start accepting new connections again.
             _mainSocket.BeginAccept(OnClientConnect, null);
+        }
+
+        private void ClientDisconnected(object sender, ClientDisconnectedArgs e)
+        {
+            Connections.TryRemove(e.Id, out _);
         }
     }
 }

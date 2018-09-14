@@ -1,4 +1,6 @@
-﻿namespace SharperUniverse.Core.Builder
+﻿using SharperUniverse.Logging;
+
+namespace SharperUniverse.Core.Builder
 {
 
     /// <summary>
@@ -14,6 +16,7 @@
         /// <param name="game">The <see cref="GameRunner"/> being built by this <see cref="GameBuilder"/>.</param>
         internal OptionsBuilder(GameRunner game)
         {
+            ServerLog.LogInfo("Adjusting settings based on the following options...");
             _game = game;
         }
 
@@ -24,6 +27,7 @@
         /// <returns>An <see cref="OptionsBuilder"/>, for setting additional options on the <see cref="GameRunner"/>.</returns>
         public OptionsBuilder SetLoopDelay(int ms)
         {
+            ServerLog.LogInfo($"Setting the delta time of the game loop at {ms} milliseconds.");
             _game.DeltaMs = ms;
             return this;
         }

@@ -1,7 +1,7 @@
 language: csharp
 solution: SharperUniverse.sln
 mono: none
-dotnet: 2.1.200
+dotnet: 2.1.300
 
 script:
     - dotnet restore

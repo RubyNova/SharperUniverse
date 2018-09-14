@@ -8,7 +8,7 @@ namespace SharperUniverse.Networking
     {
         int Port { get; }
 
-        ConcurrentBag<ISharperConnection> Connections { get; }
+        ConcurrentDictionary<Guid, ISharperConnection> Connections { get; }
 
         event EventHandler<NewConnectionArgs> NewConnectionMade;
 

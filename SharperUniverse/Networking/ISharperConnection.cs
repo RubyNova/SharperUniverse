@@ -9,6 +9,8 @@ namespace SharperUniverse.Networking
 
         event EventHandler<MessageReceivedArgs> ReceivedMessage;
 
+        event EventHandler<ClientDisconnectedArgs> ClientDisconnected;
+
         void Send(string data);
 
         void ListenForData();

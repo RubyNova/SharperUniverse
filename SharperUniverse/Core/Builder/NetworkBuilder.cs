@@ -1,4 +1,5 @@
-﻿using SharperUniverse.Networking;
+﻿using SharperUniverse.Logging;
+using SharperUniverse.Networking;
 
 namespace SharperUniverse.Core.Builder
 {
@@ -8,17 +9,20 @@ namespace SharperUniverse.Core.Builder
 
         public NetworkBuilder(GameRunner game)
         {
+            ServerLog.LogInfo("Now composing defined network behaviour...");
             _game = game;
         }
 
         public OptionsBuilder RegisterServer(ISharperServer sharperServer)
         {
+            ServerLog.LogInfo($"Using ISharperServer of type {sharperServer.GetType().FullName} as server mainframe.");
             _game.Server = sharperServer;
             return new OptionsBuilder(_game);
         }
 
         public OptionsBuilder DefaultServer(int port)
         {
+            ServerLog.LogInfo($"Using default telnet ISharperServer type as server mainframe.");
             _game.Server = new Server(port);
             return new OptionsBuilder(_game);
         }

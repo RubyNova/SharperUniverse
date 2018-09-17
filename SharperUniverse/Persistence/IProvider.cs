@@ -16,7 +16,7 @@ namespace SharperUniverse.Persistence
 		/// <param name="saveIdentity"></param>
 		/// <param name="state"></param>
 		/// <returns>a <see cref="SharperSaveState"/> to indicate the success of saving the current state.</returns>
-		SharperSaveState Save(int saveIdentity, SharperGameStateModel state);
+		SharperSaveState Save(SharperGameStateModel state);
 
 		SharperGameStateModel Load(int saveIdentity);
 
@@ -24,7 +24,7 @@ namespace SharperUniverse.Persistence
 
 		SharperSaveState Delete(int saveIdentity);
 
-		void Connect(string connectionString);
+		void Connect();
 
 		string ConnectionString { get; set; }
 

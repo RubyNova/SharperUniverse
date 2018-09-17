@@ -1,6 +1,5 @@
 ﻿using SharperUniverse.Logging;
 using SharperUniverse.Networking;
-using SharperUniverse.Persistence;
 
 namespace SharperUniverse.Core.Builder
 {
@@ -36,10 +35,5 @@ namespace SharperUniverse.Core.Builder
         {
             return new OptionsBuilder(_game);
         }
-
-	    public PersistenceBuilder WithPersistence<T>() where T : IDatabaseProvider
-	    {
-		    return new PersistenceBuilder(_game, typeof(T));
-	    }
     }
 }

@@ -26,6 +26,7 @@ namespace SharperUniverse.Core.Builder
         public async Task StartGameAsync()
         {
             ServerLog.LogInfo("Game server now launching...");
+	        _game.PeristenceManager.Connect();
             _game.Server.Start();
             await _game.RunGameAsync();
         }

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Serilog;
 using SharperUniverse.Logging;
 
 namespace SharperUniverse.Core.Builder

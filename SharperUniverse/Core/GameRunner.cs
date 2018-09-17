@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharperUniverse.Logging;
 using SharperUniverse.Networking;
+using SharperUniverse.Persistence;
 
 namespace SharperUniverse.Core
 {
@@ -18,6 +19,7 @@ namespace SharperUniverse.Core
         internal List<SharperEntity> Entities { get; set; }
         internal ISharperServer Server { get; set; }
         internal int DeltaMs { get; set; }
+	    internal PersistanceManager PeristenceManager { get; set; }
 
         private readonly CancellationTokenSource _cancellationTokenSource;
 

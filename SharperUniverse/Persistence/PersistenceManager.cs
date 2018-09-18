@@ -4,11 +4,11 @@ using SharperUniverse.Core;
 
 namespace SharperUniverse.Persistence
 {
-	public class PersistanceManager
+	public class PersistenceManager
 	{
 		internal IDatabaseProvider _provider;
 
-		public PersistanceManager(Type provider, string connectionString)
+		public PersistenceManager(Type provider, string connectionString)
 		{
 			_provider = (IDatabaseProvider)Activator.CreateInstance(provider);
 			_provider.ConnectionString = connectionString;

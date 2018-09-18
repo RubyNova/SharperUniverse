@@ -19,7 +19,7 @@ namespace SharperUniverse.Core
         internal List<SharperEntity> Entities { get; set; }
         internal ISharperServer Server { get; set; }
         internal int DeltaMs { get; set; }
-	    internal PersistanceManager PeristenceManager { get; set; }
+	    internal PersistenceManager PeristenceManager { get; set; }
 
         private readonly CancellationTokenSource _cancellationTokenSource;
 

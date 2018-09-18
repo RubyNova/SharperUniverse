@@ -16,7 +16,7 @@ namespace SharperUniverse.Core.Builder
 
 		public OptionsBuilder WithConnectionString(string connectionString)
 		{
-			_game.PeristenceManager = new PersistanceManager(_provider, connectionString);
+			_game.PeristenceManager = new PersistenceManager(_provider, connectionString);
 			return new OptionsBuilder(_game);
 		}
 	}

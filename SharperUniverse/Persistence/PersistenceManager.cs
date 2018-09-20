@@ -27,7 +27,9 @@ namespace SharperUniverse.Persistence
 
 		public List<BaseSharperComponent> Load(int saveIndex)
 		{
-			return _provider.Load(saveIndex).Components;
+			var loaded = _provider.Load(saveIndex);
+			Console.WriteLine(loaded);
+			return loaded.Components;
 		}
 
 		public SharperSaveState Modify(int saveIndex, List<BaseSharperComponent> components)
@@ -39,6 +41,11 @@ namespace SharperUniverse.Persistence
 		public SharperSaveState Delete(int saveIndex)
 		{
 			return _provider.Delete(saveIndex);
+		}
+
+		public void Clear()
+		{
+			_provider.Clear();
 		}
 	}
 }

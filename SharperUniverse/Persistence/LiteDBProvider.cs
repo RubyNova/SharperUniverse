@@ -1,4 +1,6 @@
-﻿using LiteDB;
+﻿using System;
+using System.Linq;
+using LiteDB;
 
 namespace SharperUniverse.Persistence
 {
@@ -10,27 +12,31 @@ namespace SharperUniverse.Persistence
 		
 		public SharperSaveState Save(SharperGameStateModel state)
 		{
-			state.Index += 1;
-			db.GetCollection<SharperGameStateModel>("saves").Insert(state);
+			var id = db.GetCollection<SharperGameStateModel>("saves").Insert(state);
 			return SharperSaveState.Full;
 		}
 
 		public SharperGameStateModel Load(int saveIdentity)
 		{
-			return db.GetCollection<SharperGameStateModel>().FindOne(save => save.Index == saveIdentity);
+			return db.GetCollection<SharperGameStateModel>("saves").FindById(saveIdentity);
 		}
 
 		public SharperSaveState Modify(int saveIdentity, SharperGameStateModel state)
 		{
-			db.GetCollection<SharperGameStateModel>().Delete(save => save.Index == saveIdentity);
-			db.GetCollection<SharperGameStateModel>().Insert(state);
+			db.GetCollection<SharperGameStateModel>("saves").Delete(save => save.Id == saveIdentity);
+			db.GetCollection<SharperGameStateModel>("saves").Insert(state);
 			return SharperSaveState.Full;
 		}
 
 		public SharperSaveState Delete(int saveIdentity)
 		{
-			db.GetCollection<SharperGameStateModel>().Delete(save => save.Index == saveIdentity);
+			db.GetCollection<SharperGameStateModel>("saves").Delete(save => save.Id == saveIdentity);
 			return SharperSaveState.Full;
+		}
+
+		public void Clear()
+		{
+			db.DropCollection("saves");
 		}
 
 		public void Connect()

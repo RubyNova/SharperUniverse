@@ -26,6 +26,8 @@ namespace SharperUniverse.Persistence
 
 		void Connect();
 
+		void Clear();
+		
 		string ConnectionString { get; set; }
 
 	}

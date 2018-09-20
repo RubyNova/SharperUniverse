@@ -1,6 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using SharperUniverse.Core;
 using SharperUniverse.Core.Builder;
 using SharperUniverse.Persistence;
@@ -24,6 +27,11 @@ namespace SharperUniverse.Tests
             });
         };
 
+		private readonly Action<System.Collections.Generic.List<BaseSharperComponent>, SharperEntity> _assertNoneAreDuplicate = (list, entity) =>
+		{
+			Assert.IsTrue(list.All(x => x.Entity == entity));
+		};
+
         [Test]
         public void CanDoBasicBuilderConstruction()
         {
@@ -36,8 +44,6 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .SetupNetwork()
                 .DefaultServer(4000)
-	            .WithPersistence<LiteDBProvider>()
-	            .WithConnectionString(@"C:\temp\SharperUniverse.db")
                 .Build();
 
             _runQuickGame(builder);
@@ -67,8 +73,6 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .SetupNetwork()
                 .DefaultServer(4000)
-	            .WithPersistence<LiteDBProvider>()
-	            .WithConnectionString(@"C:\temp\SharperUniverse.db")
                 .Build();
 
             _runQuickGame(builder);
@@ -92,8 +96,6 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .SetupNetwork()
                 .DefaultServer(4000)
-	            .WithPersistence<LiteDBProvider>()
-	            .WithConnectionString(@"C:\temp\SharperUniverse.db")
                 .Build();
 
             _runQuickGame(builder);
@@ -112,8 +114,6 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .SetupNetwork()
                 .DefaultServer(4000)
-	            .WithPersistence<LiteDBProvider>()
-	            .WithConnectionString(@"C:\temp\SharperUniverse.db")
                 .Build();
 
             _runQuickGame(builder);
@@ -136,27 +136,35 @@ namespace SharperUniverse.Tests
                 .SetupNetwork()
                 .DefaultServer(4000)
 	            .WithPersistence<LiteDBProvider>()
-	            .WithConnectionString(@"C:\temp\SharperUniverse.db")
+	            .WithConnectionString($"{Path.GetTempPath()}\\SU_test.db")
                 .Build();
 
             _runQuickGame(builder);
         }
 
 	    [Test]
-	    public void CanStartWithoutProvider()
+	    public void NoDuplicateEntitiesWithPersistence()
 	    {
-		    var builder = new GameBuilder()
-			    .AddCommand<EmptyCommandInfo>("test")
-			    .CreateSystem()
-			    .AddSystem<EmptySystem>()
-			    .ComposeSystems()
-			    .AddEntity().WithComponent<EmptyComponent>()
-			    .ComposeEntities()
-			    .SetupNetwork()
-			    .DefaultServer(4000)
-			    .Build();
+		    var persistenceManager = new PersistenceManager(typeof(LiteDBProvider), $"{Path.GetTempPath()}\\SU_test.db");
 		    
-		    _runQuickGame(builder);
+		    persistenceManager.Connect();
+
+		    persistenceManager.Clear();
+		    
+		    var entity = new SharperEntity();
+
+		    var list = new System.Collections.Generic.List<BaseSharperComponent>()
+		    {
+			    new FooComponent(entity),
+			    new FooBarComponent(entity),
+			    new BarComponent(entity),
+		    };
+		    
+		    persistenceManager.Save(list);
+
+		    var loaded = persistenceManager.Load(1);
+
+		    _assertNoneAreDuplicate(loaded, entity);
 	    }
     }
 }

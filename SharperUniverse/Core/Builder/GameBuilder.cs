@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Serilog;
 using SharperUniverse.Logging;
 
@@ -10,12 +13,14 @@ namespace SharperUniverse.Core.Builder
     public class GameBuilder
     {
         private readonly GameRunner _game;
+        private Dictionary<string, Type> _commandBindings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameBuilder"/> class.
         /// </summary>
         public GameBuilder()
         {
+        _commandBindings = new Dictionary<string, Type>();
             ServerLog.LogInfo($"Game server {Assembly.GetCallingAssembly().GetName().Name} is now building...");
             // Prime our game runner, and add to it as we construct the builder
             _game = new GameRunner();
@@ -30,7 +35,7 @@ namespace SharperUniverse.Core.Builder
         public GameBuilder AddCommand<T>(string name) where T : IUniverseCommandInfo
         {
             ServerLog.LogInfo($"Adding command type {typeof(T).FullName} with assigned name of \"{name}\"");
-            _game.CommandBindings.Add(name, typeof(T));
+            _commandBindings.Add(name, typeof(T));
 
             return this;
         }
@@ -38,7 +43,7 @@ namespace SharperUniverse.Core.Builder
         public SystemBuilder CreateSystem()
         {
             ServerLog.LogInfo("Beginning System composition...");
-            return new SystemBuilder(_game);
+            return new SystemBuilder(_game, _commandBindings);
         }
     }
 }

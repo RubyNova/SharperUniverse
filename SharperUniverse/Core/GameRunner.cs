@@ -11,9 +11,8 @@ namespace SharperUniverse.Core
     /// <summary>
     /// This is the entry point and main manager for any game that uses SharperUniverse.
     /// </summary>
-    public class GameRunner
+    public class GameRunner : IGameRunner
     {
-        internal Dictionary<string, Type> CommandBindings { get; set; }
         internal List<ISharperSystem<BaseSharperComponent>> Systems { get; set; }
         internal List<SharperEntity> Entities { get; set; }
         internal ISharperServer Server { get; set; }
@@ -26,7 +25,6 @@ namespace SharperUniverse.Core
             Systems = new List<ISharperSystem<BaseSharperComponent>>();
             Entities = new List<SharperEntity>();
             DeltaMs = 50;
-            CommandBindings = new Dictionary<string, Type>();
             _cancellationTokenSource = new CancellationTokenSource();
         }
 

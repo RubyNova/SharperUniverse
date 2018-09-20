@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using SharperUniverse.Logging;
 using SharperUniverse.Utilities;
@@ -14,13 +15,15 @@ namespace SharperUniverse.Core.Builder
         private readonly GameRunner _game;
         private readonly List<ConstructorInfo> _systemBuilders;
         private readonly Dictionary<Type, object> _registeredSystemParameters;
+        private Dictionary<string, Type> _commands;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SystemBuilder"/> class.
         /// </summary>
         /// <param name="game">The <see cref="GameRunner"/> being built by this <see cref="GameBuilder"/>.</param>
-        internal SystemBuilder(GameRunner game)
+        internal SystemBuilder(GameRunner game, Dictionary<string, Type> commands)
         {
+            _commands = commands;
             ServerLog.LogInfo("Now attempting to compose ISharperSystem types...");
             _game = game;
             _systemBuilders = new List<ConstructorInfo>();
@@ -98,6 +101,8 @@ namespace SharperUniverse.Core.Builder
                 _registeredSystemParameters.Add(systemBuilder.DeclaringType,
                     systemBuilder.Invoke(systemParameters.ToArray()));
             }
+
+            (_game.Systems.First(x => x is SharperInputSystem) as SharperInputSystem).CommandBindings = _commands;
             
             ServerLog.LogInfo("Systems attached.");
 

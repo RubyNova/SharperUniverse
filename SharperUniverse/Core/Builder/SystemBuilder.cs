@@ -47,8 +47,7 @@ namespace SharperUniverse.Core.Builder
             {
                 foreach (var parameter in systemConstructor.GetParameters())
                 {
-                    if (parameter.ParameterType != typeof(GameRunner) &&
-                        !typeof(BaseSharperSystem<>).IsSubclassOfRawGeneric(parameter.ParameterType)
+                    if (!typeof(BaseSharperSystem<>).IsSubclassOfRawGeneric(parameter.ParameterType)
                         && parameter.ParameterType != typeof(IGameRunner))
                     {
                         // Maybe we want to `break;` here?
@@ -97,11 +96,11 @@ namespace SharperUniverse.Core.Builder
         }
 
         // Local method - recursively called to build dependency graph
-        object ComposeSystem(Type type)
+        private object ComposeSystem(Type type)
         {
             // If we're not GameRunner or a system, then get out of here
             //  We may want to consider throwing InvalidOperationException here?
-            if (type != typeof(GameRunner) && type != typeof(IGameRunner) && !typeof(BaseSharperSystem<>).IsSubclassOfRawGeneric(type))
+            if (type != typeof(IGameRunner) && !typeof(BaseSharperSystem<>).IsSubclassOfRawGeneric(type))
             {
                 return null;
             }

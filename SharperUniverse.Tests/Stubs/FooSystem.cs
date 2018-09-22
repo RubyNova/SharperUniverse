@@ -10,7 +10,7 @@ namespace SharperUniverse.Tests.Stubs
 
         private BarSystem _barSystem;
 
-        public FooSystem(GameRunner game, BarSystem barSystem) : base(game)
+        public FooSystem(IGameRunner game, BarSystem barSystem) : base(game)
         {
             TestSwitch = false;
             _barSystem = barSystem;

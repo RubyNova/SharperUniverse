@@ -20,7 +20,7 @@ namespace SharperUniverse.Core.Builder
         /// </summary>
         public GameBuilder()
         {
-        _commandBindings = new Dictionary<string, Type>();
+            _commandBindings = new Dictionary<string, Type>();
             ServerLog.LogInfo($"Game server {Assembly.GetCallingAssembly().GetName().Name} is now building...");
             // Prime our game runner, and add to it as we construct the builder
             _game = new GameRunner();

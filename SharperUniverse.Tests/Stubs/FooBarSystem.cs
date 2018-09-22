@@ -13,7 +13,7 @@ namespace SharperUniverse.Tests.Stubs
         private readonly TestSystem _test;
         private readonly EmptySystem _empty;
 
-        public FooBarSystem(GameRunner game, FooSystem foo, TestSystem test, EmptySystem empty) : base(game)
+        public FooBarSystem(IGameRunner game, FooSystem foo, TestSystem test, EmptySystem empty) : base(game)
         {
             TestSwitch = false;
             _foo = foo;

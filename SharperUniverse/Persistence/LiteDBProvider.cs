@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LiteDB;
+using SharperUniverse.Core;
+using SharperUniverse.Utilities;
 
 namespace SharperUniverse.Persistence
 {
@@ -10,10 +13,26 @@ namespace SharperUniverse.Persistence
 		public string ConnectionString { get; set; }
 		private LiteDatabase db;
 		
-		public SharperSaveState Save(SharperGameStateModel state)
+		public int Save(List<BaseSharperComponent> components)
 		{
-			var id = db.GetCollection<SharperGameStateModel>("saves").Insert(state);
-			return SharperSaveState.Full;
+			var dict = new Dictionary<SharperEntity, List<object>>();
+			foreach (var component in components)
+			{
+				var persistentSharperComponent = component as IPersistentSharperComponent<BaseSharperComponent>;
+				if (persistentSharperComponent == null) continue;
+				if (dict.ContainsKey(component.Entity))
+				{
+					var thing = persistentSharperComponent.ExportData();
+					dict[component.Entity].Add(thing);
+				}
+				else
+				{
+					dict.Add(component.Entity, new List<object>()
+					{
+						persistentSharperComponent.ExportData()
+					});
+				}
+			}
 		}
 
 		public SharperGameStateModel Load(int saveIdentity)
@@ -21,17 +40,13 @@ namespace SharperUniverse.Persistence
 			return db.GetCollection<SharperGameStateModel>("saves").FindById(saveIdentity);
 		}
 
-		public SharperSaveState Modify(int saveIdentity, SharperGameStateModel state)
+		public void Modify(int saveIdentity,  List<BaseSharperComponent> components)
 		{
-			db.GetCollection<SharperGameStateModel>("saves").Delete(save => save.Id == saveIdentity);
-			db.GetCollection<SharperGameStateModel>("saves").Insert(state);
-			return SharperSaveState.Full;
 		}
 
-		public SharperSaveState Delete(int saveIdentity)
+		public void Delete(int saveIdentity)
 		{
 			db.GetCollection<SharperGameStateModel>("saves").Delete(save => save.Id == saveIdentity);
-			return SharperSaveState.Full;
 		}
 
 		public void Clear()

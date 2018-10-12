@@ -19,9 +19,9 @@ namespace SharperUniverse.Persistence
 			_provider.Connect();
 		}
 
-		public SharperSaveState Save(List<BaseSharperComponent> components)
+		public int Save()
 		{
-			var model = new SharperGameStateModel(components);
+			var model = new SharperGameStateModel();
 			return _provider.Save(model);
 		}
 
@@ -32,15 +32,15 @@ namespace SharperUniverse.Persistence
 			return loaded.Components;
 		}
 
-		public SharperSaveState Modify(int saveIndex, List<BaseSharperComponent> components)
+		public void Modify(int saveIndex, List<BaseSharperComponent> components)
 		{
 			var state = new SharperGameStateModel(components);
-			return _provider.Modify(saveIndex, state);
+			_provider.Modify(saveIndex, state);
 		}
 
-		public SharperSaveState Delete(int saveIndex)
+		public void Delete(int saveIndex)
 		{
-			return _provider.Delete(saveIndex);
+			_provider.Delete(saveIndex);
 		}
 
 		public void Clear()

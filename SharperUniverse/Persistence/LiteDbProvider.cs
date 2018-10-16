@@ -58,7 +58,7 @@ namespace SharperUniverse.Persistence
 			}
 		}
 
-		public async Task<> Load(int index)
+		public async Task Load(int index)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{
@@ -73,8 +73,6 @@ namespace SharperUniverse.Persistence
 					}
 				}
 			}
-
-			return Task.CompletedTask;
 		}
 
 		public void Modify(int index, List<BaseSharperComponent> components)

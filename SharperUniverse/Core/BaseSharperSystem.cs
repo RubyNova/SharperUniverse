@@ -49,6 +49,14 @@ namespace SharperUniverse.Core
         /// <returns></returns>
         public abstract Task CycleUpdateAsync(int deltaMs);
 
+	    public Task RegisterComponentAsync(SharperEntity entity, BaseSharperComponent component)
+	    {
+		    Components.Add((T)component);
+
+		    ComponentRegistered?.Invoke(this, new SharperComponentEventArgs(component));
+		    return Task.CompletedTask;
+	    }
+	    
         /// <summary>
         /// Registers a component of type <typeparamref name="T"/> and assigns it to the target <see cref="SharperEntity"/>.
         /// </summary>

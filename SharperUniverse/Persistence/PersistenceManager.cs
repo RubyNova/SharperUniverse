@@ -14,15 +14,9 @@ namespace SharperUniverse.Persistence
 			_provider.ConnectionString = connectionString;
 		}
 
-		public void Connect()
-		{
-			_provider.Connect();
-		}
-
 		public int Save()
 		{
-			var model = new SharperGameStateModel();
-			return _provider.Save(model);
+			foreach(var component)
 		}
 
 		public List<BaseSharperComponent> Load(int saveIndex)

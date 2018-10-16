@@ -27,11 +27,6 @@ namespace SharperUniverse.Tests
             });
         };
 
-		private readonly Action<System.Collections.Generic.List<BaseSharperComponent>, SharperEntity> _assertNoneAreDuplicate = (list, entity) =>
-		{
-			Assert.IsTrue(list.All(x => x.Entity == entity));
-		};
-
         [Test]
         public void CanDoBasicBuilderConstruction()
         {
@@ -141,30 +136,5 @@ namespace SharperUniverse.Tests
 
             _runQuickGame(builder);
         }
-
-	    [Test]
-	    public void NoDuplicateEntitiesWithPersistence()
-	    {
-		    var persistenceManager = new PersistenceManager(typeof(LiteDBProvider), $"{Path.GetTempPath()}\\SU_test.db");
-		    
-		    persistenceManager.Connect();
-
-		    persistenceManager.Clear();
-		    
-		    var entity = new SharperEntity();
-
-		    var list = new System.Collections.Generic.List<BaseSharperComponent>()
-		    {
-			    new FooComponent(entity),
-			    new FooBarComponent(entity),
-			    new BarComponent(entity),
-		    };
-		    
-		    persistenceManager.Save(list);
-
-		    var loaded = persistenceManager.Load(1);
-
-		    _assertNoneAreDuplicate(loaded, entity);
-	    }
     }
 }

@@ -74,6 +74,16 @@ namespace SharperUniverse.Core
             return Task.CompletedTask;
         }
 
+	    public Task RegisterComponentsAsync(params BaseSharperComponent[] components)
+	    {
+		    foreach (var component in components)
+		    {
+				Components.Add((T)component);
+			    ComponentRegistered?.Invoke(this, new SharperComponentEventArgs(component));   
+		    }
+		    return Task.CompletedTask;
+	    }
+
         public Task<bool> EntityHasComponentOfManagingTypeAsync(SharperEntity entity)
         {
             return Task.FromResult(Components.Any(x => x.Entity == entity));

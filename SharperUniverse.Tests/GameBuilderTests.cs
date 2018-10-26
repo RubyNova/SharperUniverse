@@ -1,10 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
-using SharperUniverse.Core;
 using SharperUniverse.Core.Builder;
 using SharperUniverse.Persistence;
 using SharperUniverse.Tests.Stubs;
@@ -130,7 +127,7 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .SetupNetwork()
                 .DefaultServer(4000)
-	            .WithPersistence<LiteDBProvider>()
+	            .WithPersistence<LiteDbProvider>()
 	            .WithConnectionString($"{Path.GetTempPath()}\\SU_test.db")
                 .Build();
 

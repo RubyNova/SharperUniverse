@@ -22,7 +22,8 @@ namespace ExampleECSUsageConsole
 
         private void OnNewInputEntity(object sender, SharperEntityEventArgs e)
         {
-            RegisterComponentAsync(Game.CreateEntityAsync().GetAwaiter().GetResult(), false, e.Entity).GetAwaiter().GetResult();
+            var entity = new TestComponent(Game.CreateEntityAsync().GetAwaiter().GetResult(), false, e.Entity);
+            RegisterComponentAsync(entity).GetAwaiter().GetResult();
         }
 
         public override async Task CycleUpdateAsync(int deltaMs)

@@ -54,6 +54,8 @@ namespace SharperUniverse.Core.Builder
                 // If we're calling this, we're always going to attach it to the most recently created entity (from the builder pattern)
                 // It's possible we could maybe improve this by forcing it to always follow the creation of an entity
                 // TODO: Possible refactor
+                var result = (T)Activator.CreateInstance(typeof(T), args);
+                system.RegisterComponentAsync(result).GetAwaiter().GetResult();
 
 	            var component = Activator.CreateInstance(typeof(T), _entities.Last(), args);
 	            

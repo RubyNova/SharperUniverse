@@ -11,7 +11,7 @@ namespace SharperUniverse.Tests.Stubs
         private float _updateTime;
         private readonly EmptySystem _emptySystem;
 
-        public TestSystem(GameRunner game, EmptySystem emptySystem) : base(game)
+        public TestSystem(IGameRunner game, EmptySystem emptySystem) : base(game)
         {
             _prevStates = new Dictionary<TestComponent, bool>();
             ComponentRegistered += OnComponentRegistered;

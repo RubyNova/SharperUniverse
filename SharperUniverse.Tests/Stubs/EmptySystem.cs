@@ -8,7 +8,7 @@ namespace SharperUniverse.Tests.Stubs
     {
         public bool TestSwitch { get; set; }
 
-        public EmptySystem(GameRunner game) : base(game)
+        public EmptySystem(IGameRunner game) : base(game)
         {
             TestSwitch = false;
         }

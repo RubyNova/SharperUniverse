@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using SharperUniverse.Logging;
 using SharperUniverse.Utilities;
@@ -14,13 +15,15 @@ namespace SharperUniverse.Core.Builder
         private readonly GameRunner _game;
         private readonly List<ConstructorInfo> _systemBuilders;
         private readonly Dictionary<Type, object> _registeredSystemParameters;
+        private Dictionary<string, Type> _commands;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SystemBuilder"/> class.
         /// </summary>
         /// <param name="game">The <see cref="GameRunner"/> being built by this <see cref="GameBuilder"/>.</param>
-        internal SystemBuilder(GameRunner game)
+        internal SystemBuilder(GameRunner game, Dictionary<string, Type> commands)
         {
+            _commands = commands;
             ServerLog.LogInfo("Now attempting to compose ISharperSystem types...");
             _game = game;
             _systemBuilders = new List<ConstructorInfo>();
@@ -36,7 +39,7 @@ namespace SharperUniverse.Core.Builder
         /// </summary>
         /// <typeparam name="TSystem">The <see cref="ISharperSystem{T}"/> to add to the <see cref="GameRunner"/>.</typeparam>
         /// <returns>A <see cref="SystemBuilder"/>, for adding multiple sytsems to the Sharper Universe.</returns>
-        public SystemBuilder AddSystem<TSystem>() where TSystem : ISharperSystem<BaseSharperComponent>
+        public SystemBuilder AddSystem<TSystem>() where TSystem : ISharperSystem
         {
             ServerLog.LogInfo($"Attaching system of type {typeof(TSystem).FullName}.");
             var systemConstructors = typeof(TSystem).GetConstructors();
@@ -44,8 +47,8 @@ namespace SharperUniverse.Core.Builder
             {
                 foreach (var parameter in systemConstructor.GetParameters())
                 {
-                    if (parameter.ParameterType != typeof(GameRunner) &&
-                        !typeof(BaseSharperSystem<>).IsSubclassOfRawGeneric(parameter.ParameterType))
+                    if (!typeof(BaseSharperSystem<>).IsSubclassOfRawGeneric(parameter.ParameterType)
+                        && parameter.ParameterType != typeof(IGameRunner))
                     {
                         // Maybe we want to `break;` here?
                         //  For now, assume that if it's not a GameRunner or a system, then it's not supported.
@@ -77,69 +80,73 @@ namespace SharperUniverse.Core.Builder
                 //  and instantiating them along the way
                 foreach (var parameter in systemBuilder.GetParameters())
                 {
-                    if (_registeredSystemParameters.TryGetValue(parameter.ParameterType, out var parameterInstance))
-                    {
-                        // We've already registered this type, so simply retrieve its registered instance and use it
-                        systemParameters.Add(parameterInstance);
-                    }
-                    else
-                    {
-                        // This type hasn't been registered yet, so recursively look through its
-                        //  dependencies and grab/register them as needed
-                        var composedSystem = ComposeSystem(parameter.ParameterType);
-                        if (composedSystem != null)
-                        {
-                            systemParameters.Add(composedSystem);
-                        }
-                    }
+                    systemParameters.Add(RegisterParameter(parameter));
                 }
 
                 // Finally, register this top-level system into this builder's graph.
                 _registeredSystemParameters.Add(systemBuilder.DeclaringType,
                     systemBuilder.Invoke(systemParameters.ToArray()));
             }
+
+            (_game.Systems.First(x => x is SharperInputSystem) as SharperInputSystem).CommandBindings = _commands;
             
             ServerLog.LogInfo("Systems attached.");
 
             return new EntityBuilder(_game);
+        }
 
-            // Local method - recursively called to build dependency graph
-            object ComposeSystem(Type type)
+        // Local method - recursively called to build dependency graph
+        private object ComposeSystem(Type type)
+        {
+            // If we're not GameRunner or a system, then get out of here
+            //  We may want to consider throwing InvalidOperationException here?
+            if (type != typeof(IGameRunner) && !typeof(BaseSharperSystem<>).IsSubclassOfRawGeneric(type))
             {
-                // If we're not GameRunner or a system, then get out of here
-                //  We may want to consider throwing InvalidOperationException here?
-                if (type != typeof(GameRunner) && !typeof(BaseSharperSystem<>).IsSubclassOfRawGeneric(type))
+                return null;
+            }
+
+
+
+            object instance = null;
+
+            // Recursively look through this dependency, registering any new systems we come across
+            //  and re-using systems/gamerunners we've already registered along the way
+            foreach (var ctor in type.GetConstructors())
+            {
+                List<object> systemParameters = new List<object>();
+
+                foreach (var parameter in ctor.GetParameters())
                 {
-                    return null;
+                    systemParameters.Add(RegisterParameter(parameter));
                 }
 
-                object instance = null;
+                // Instantiates this system's constructor, implicitly registering itself to the GameRunner
+                //  and caching off its instance for use as a parent system's constructor parameter
+                instance = ctor.Invoke(systemParameters.ToArray());
+            }
 
-                // Recursively look through this dependency, registering any new systems we come across
-                //  and re-using systems/gamerunners we've already registered along the way
-                foreach (var ctor in type.GetConstructors())
-                {
-                    List<object> systemParameters = new List<object>();
+            _registeredSystemParameters.Add(type, instance);
+            return instance;
+        }
 
-                    foreach (var parameter in ctor.GetParameters())
-                    {
-                        if (_registeredSystemParameters.TryGetValue(parameter.ParameterType, out var parameterInstance))
-                        {
-                            systemParameters.Add(parameterInstance);
-                        }
-                        else
-                        {
-                            systemParameters.Add(ComposeSystem(parameter.ParameterType));
-                        }
-                    }
-
-                    // Instantiates this system's constructor, implicitly registering itself to the GameRunner
-                    //  and caching off its instance for use as a parent system's constructor parameter
-                    instance = ctor.Invoke(systemParameters.ToArray());
-                }
-
-                _registeredSystemParameters.Add(type, instance);
-                return instance;
+        private object RegisterParameter(ParameterInfo parameter)
+        {
+            if (_registeredSystemParameters.TryGetValue(parameter.ParameterType, out var parameterInstance))
+            {
+                // We've already registered this type, so simply retrieve its registered instance and use it
+                return parameterInstance;
+            }
+            else if (parameter.ParameterType == typeof(IGameRunner))
+            {
+                //TryGetValue does not work for Interfaces, and as such here is a hacky work around
+                //FIX THIS RUBY OR SOMEONE PLEASE ~ Love Ron
+                return _game;
+            }
+            else
+            {
+                // This type hasn't been registered yet, so recursively look through its
+                //  dependencies and grab/register them as needed
+                return ComposeSystem(parameter.ParameterType);
             }
         }
     }

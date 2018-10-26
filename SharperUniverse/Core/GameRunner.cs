@@ -12,10 +12,9 @@ namespace SharperUniverse.Core
     /// <summary>
     /// This is the entry point and main manager for any game that uses SharperUniverse.
     /// </summary>
-    public class GameRunner
+    public class GameRunner : IGameRunner
     {
-        internal Dictionary<string, Type> CommandBindings { get; set; }
-        internal List<ISharperSystem<BaseSharperComponent>> Systems { get; set; }
+        internal List<ISharperSystem> Systems{ get; set; }
         internal List<SharperEntity> Entities { get; set; }
         internal ISharperServer Server { get; set; }
         internal int DeltaMs { get; set; }
@@ -25,10 +24,9 @@ namespace SharperUniverse.Core
 
         internal GameRunner()
         {
-            Systems = new List<ISharperSystem<BaseSharperComponent>>();
+            Systems = new List<ISharperSystem>();
             Entities = new List<SharperEntity>();
             DeltaMs = 50;
-            CommandBindings = new Dictionary<string, Type>();
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -36,7 +34,7 @@ namespace SharperUniverse.Core
         /// Registers an <see cref="ISharperSystem{T}"/> to the Game. This should not be called from external code.
         /// </summary>
         /// <param name="system">The target system to register.</param>
-        public void RegisterSystem(ISharperSystem<BaseSharperComponent> system)
+        public void RegisterSystem<T>(T system) where T : ISharperSystem
         {
             if (Systems.Contains(system) || Systems.Any(x => x.GetType() == system.GetType())) throw new DuplicateSharperObjectException();
 

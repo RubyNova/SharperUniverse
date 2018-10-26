@@ -12,6 +12,8 @@ namespace SharperUniverse.Core
     {
         public event EventHandler<SharperEntityEventArgs> NewInputEntityCreated;
         public event EventHandler<SharperEntityEventArgs> InputEntityDestroyed;
+        
+        internal Dictionary<string, Type> CommandBindings { get; set; }
 
         public SharperInputSystem(GameRunner game) : base(game)
         {
@@ -37,14 +39,14 @@ namespace SharperUniverse.Core
             var inputComponent = Components.FirstOrDefault(x => x.BindingSource.Id == connection.Id);
             var input = e.Message.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries);
 
-            if(!Game.CommandBindings.ContainsKey(input[0]))
+            if(!CommandBindings.ContainsKey(input[0]))
             {
                 var conn = (ISharperConnection) sender;
                 conn.Send($"No command called {input[0]} exists.");
                 return;
             }
 
-            var resultType = Game.CommandBindings[input[0]];
+            var resultType = CommandBindings[input[0]];
 
             var resultInfo = (IUniverseCommandInfo)Activator.CreateInstance(resultType);
             resultInfo.ProcessArgsAsync(input.SubArray(1, input.Length - 1).ToList());
@@ -65,7 +67,11 @@ namespace SharperUniverse.Core
         {
             var newEntity = await Game.CreateEntityAsync();
             NewInputEntityCreated?.Invoke(this, new SharperEntityEventArgs(newEntity));
+<<<<<<< HEAD
             await RegisterComponentAsync(new SharperConnectionComponent(newEntity, e.Connection));
+=======
+            await RegisterComponentAsync(new SharperInputComponent(newEntity, e.Connection));
+>>>>>>> master
         }
 
         public Task<Dictionary<SharperEntity, IUniverseCommandInfo>> GetEntitiesByCommandInfoTypesAsync(params Type[] commandTypes)

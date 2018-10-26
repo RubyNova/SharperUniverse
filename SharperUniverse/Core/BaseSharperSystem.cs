@@ -14,7 +14,7 @@ namespace SharperUniverse.Core
         /// <summary>
         /// The instance of <see cref="GameRunner"/> this System is registered to.
         /// </summary>
-        protected readonly GameRunner Game;
+        protected readonly IGameRunner Game;
 
         /// <summary>
         /// Fires whenever a component is registered in the system.
@@ -35,7 +35,7 @@ namespace SharperUniverse.Core
         /// Base constructor for any <see cref="BaseSharperSystem{T}"/>. This must be called for the system to function correctly. Do not pass <see cref="ISharperSystem{T}"/> types in an overriden constructor. Instead, use <see cref="SharperInjectAttribute"/>.
         /// </summary>
         /// <param name="game">The current GameRunner this system should be registered to.</param>
-        protected BaseSharperSystem(GameRunner game)
+        protected BaseSharperSystem(IGameRunner game)
         {
             Components = new List<T>();
             game.RegisterSystem(this);
@@ -49,6 +49,7 @@ namespace SharperUniverse.Core
         /// <returns></returns>
         public abstract Task CycleUpdateAsync(int deltaMs);
 
+<<<<<<< HEAD
 	    public Task RegisterComponentAsync(BaseSharperComponent component)
 	    {
 		    Components.Add((T)component);
@@ -62,6 +63,26 @@ namespace SharperUniverse.Core
 		    foreach (var component in components)
 		    {
 			    Components.Add((T)component);
+=======
+        public Task RegisterComponentAsync(BaseSharperComponent component)
+        {
+            if (component.GetType() != typeof(T))
+            {
+                throw new SharperComponentMismatchException();
+            }
+            
+            Components.Add((T)component);
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Registers a component of type <typeparamref name="T"/> and assigns it to the target <see cref="SharperEntity"/>.
+        /// </summary>
+        /// <param name="component">The instantiated component to register.</param>
+        /// <returns>Returns a <see cref="Task"/> that represents the registration work.</returns>
+        public Task RegisterComponentAsync(T component)
+        {
+>>>>>>> master
 
 			    ComponentRegistered?.Invoke(this, new SharperComponentEventArgs(component));
 		    }

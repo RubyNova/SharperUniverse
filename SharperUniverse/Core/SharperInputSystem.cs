@@ -65,7 +65,7 @@ namespace SharperUniverse.Core
         {
             var newEntity = await Game.CreateEntityAsync();
             NewInputEntityCreated?.Invoke(this, new SharperEntityEventArgs(newEntity));
-            await RegisterComponentAsync(newEntity, e.Connection);
+            await RegisterComponentAsync(new SharperConnectionComponent(newEntity, e.Connection));
         }
 
         public Task<Dictionary<SharperEntity, IUniverseCommandInfo>> GetEntitiesByCommandInfoTypesAsync(params Type[] commandTypes)

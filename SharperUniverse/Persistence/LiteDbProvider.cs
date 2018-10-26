@@ -69,7 +69,7 @@ namespace SharperUniverse.Persistence
 					{
 						var system = _systems.Find(x => x.GetType().GetGenericArguments().First() == component.SystemType);
 						if (system == null) continue; //TODO throw here
-						await system.RegisterComponentAsync(pair.Key, component.Import(pair.Key));
+						await system.RegisterComponentAsync(component.Import(pair.Key));
 					}
 				}
 			}
@@ -80,11 +80,33 @@ namespace SharperUniverse.Persistence
 			using (var db = new LiteDatabase(ConnectionString))
 			{
 
-				var data = ComponentsToExportables(components);
+				var temp = new Dictionary<SharperEntity, List<IImportable<BaseSharperComponent>>>();
+				
+				foreach (var component in components)
+				{
+					
+					var cast = component as IExportable<IImportable<BaseSharperComponent>, object>;
+
+					if (cast == null) continue;
+
+					var data = cast.Export();
+					
+					if (!temp.ContainsKey(component.Entity))
+					{
+						temp.Add(component.Entity, new List<IImportable<BaseSharperComponent>>()
+						{
+							data
+						});
+					}
+					else
+					{
+						temp[component.Entity].Add(data);
+					}
+				}
 				
 				var model = new SharperSaveModel()
 				{
-					Data = data
+					Data = temp
 				};
 				db.GetCollection<SharperSaveModel>("saves").Update(index, model);
 			}
@@ -92,7 +114,10 @@ namespace SharperUniverse.Persistence
 
 		public void Delete(int index)
 		{
-			throw new System.NotImplementedException();
+			using (var db = new LiteDatabase(ConnectionString))
+			{
+				db.GetCollection<SharperSaveModel>("saves").Delete(index);
+			}
 		}
 
 		private List<IImportable<BaseSharperComponent>> ComponentsToExportables(List<BaseSharperComponent> components)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SharperUniverse.Logging;
 
@@ -53,7 +54,10 @@ namespace SharperUniverse.Core.Builder
                 // If we're calling this, we're always going to attach it to the most recently created entity (from the builder pattern)
                 // It's possible we could maybe improve this by forcing it to always follow the creation of an entity
                 // TODO: Possible refactor
-                system.RegisterComponentAsync(_entities.Last(), args).GetAwaiter().GetResult();
+
+	            var component = Activator.CreateInstance(typeof(T), _entities.Last(), args);
+	            
+                system.RegisterComponentAsync((BaseSharperComponent)component).GetAwaiter().GetResult();
 
                 break;
             }

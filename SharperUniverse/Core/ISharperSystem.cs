@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SharperUniverse.Core
 {
@@ -15,7 +16,9 @@ namespace SharperUniverse.Core
         /// <returns></returns>
         Task CycleUpdateAsync(int deltaMs);
 
-        Task RegisterComponentAsync(SharperEntity entity, params object[] args);
+        Task RegisterComponentAsync(BaseSharperComponent component);
+
+	    Task RegisterComponentsAsync(params BaseSharperComponent[] components);
 
         Task UnregisterAllComponentsByEntityAsync(SharperEntity entity);
     }

@@ -62,7 +62,7 @@ namespace SharperUniverse.Core
         /// <summary>
         /// Launches the Game. This task runs for as long as the game is running.
         /// </summary>
-        /// <returns>A <see cref="Task"/> represnting the asynchronous game loop.</returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous game loop.</returns>
         public async Task RunGameAsync()
         {
             var inputSystem = (SharperInputSystem)Systems.First(x => x is SharperInputSystem);

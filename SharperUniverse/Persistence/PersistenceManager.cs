@@ -14,32 +14,24 @@ namespace SharperUniverse.Persistence
 			_provider.ConnectionString = connectionString;
 		}
 
-		public int Save()
+		public int Save(List<BaseSharperComponent> components)
 		{
-			foreach(var component)
+			return _provider.Save(components);
 		}
 
-		public List<BaseSharperComponent> Load(int saveIndex)
+		public void Load(int saveIndex)
 		{
-			var loaded = _provider.Load(saveIndex);
-			Console.WriteLine(loaded);
-			return loaded.Components;
+			_provider.Load(saveIndex);
 		}
 
 		public void Modify(int saveIndex, List<BaseSharperComponent> components)
 		{
-			var state = new SharperGameStateModel(components);
-			_provider.Modify(saveIndex, state);
+			_provider.Modify(saveIndex, components);
 		}
 
 		public void Delete(int saveIndex)
 		{
 			_provider.Delete(saveIndex);
-		}
-
-		public void Clear()
-		{
-			_provider.Clear();
 		}
 	}
 }

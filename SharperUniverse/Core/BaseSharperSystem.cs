@@ -49,23 +49,24 @@ namespace SharperUniverse.Core
         /// <returns></returns>
         public abstract Task CycleUpdateAsync(int deltaMs);
 
+        public Task RegisterComponentAsync(BaseSharperComponent component)
+        {
+            if (component.GetType() != typeof(T))
+            {
+                throw new SharperComponentMismatchException();
+            }
+            
+            Components.Add((T)component);
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Registers a component of type <typeparamref name="T"/> and assigns it to the target <see cref="SharperEntity"/>.
         /// </summary>
-        /// <param name="entity">The target entity.</param>
-        /// <param name="args">the values for the new component.</param>
+        /// <param name="component">The instantiated component to register.</param>
         /// <returns>Returns a <see cref="Task"/> that represents the registration work.</returns>
-        public Task RegisterComponentAsync(SharperEntity entity, params object[] args)
+        public Task RegisterComponentAsync(T component)
         {
-            var inputArr = new object[args.Length + 1];
-            inputArr[0] = entity;
-
-            for (int i = 1; i < inputArr.Length; i++)
-            {
-                inputArr[i] = args[i - 1];
-            }
-
-            T component = (T)Activator.CreateInstance(typeof(T), inputArr);
 
             Components.Add(component);
 

@@ -6,7 +6,7 @@ namespace SharperUniverse.Core
     /// The interface <see cref="BaseSharperSystem{T}"/> inherits from. You should not create types directly from this interface. Instead, inherit <see cref="BaseSharperSystem{T}"/>.
     /// </summary>
     /// <typeparam name="T">The <see cref="BaseSharperSystem{T}"/> this system governs.</typeparam>
-    public interface ISharperSystem<out T> where T : BaseSharperComponent
+    public interface ISharperSystem<T> : ISharperSystem where T : BaseSharperComponent
     {
         /// <summary>
         /// The logic that runs in an <see cref="ISharperSystem{T}"/> once per update cycle. The update cycle is defined by the <see cref="GameRunner"/> on instantiation.
@@ -15,7 +15,16 @@ namespace SharperUniverse.Core
         /// <returns></returns>
         Task CycleUpdateAsync(int deltaMs);
 
-        Task RegisterComponentAsync(SharperEntity entity, params object[] args);
+        Task RegisterComponentAsync(T component);
+
+        Task UnregisterAllComponentsByEntityAsync(SharperEntity entity);
+    }
+
+    public interface ISharperSystem
+    {
+        Task CycleUpdateAsync(int deltaMs);
+
+        Task RegisterComponentAsync(BaseSharperComponent component);
 
         Task UnregisterAllComponentsByEntityAsync(SharperEntity entity);
     }

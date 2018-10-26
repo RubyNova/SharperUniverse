@@ -39,7 +39,7 @@ namespace SharperUniverse.Core.Builder
         /// </summary>
         /// <typeparam name="TSystem">The <see cref="ISharperSystem{T}"/> to add to the <see cref="GameRunner"/>.</typeparam>
         /// <returns>A <see cref="SystemBuilder"/>, for adding multiple sytsems to the Sharper Universe.</returns>
-        public SystemBuilder AddSystem<TSystem>() where TSystem : ISharperSystem<BaseSharperComponent>
+        public SystemBuilder AddSystem<TSystem>() where TSystem : ISharperSystem
         {
             ServerLog.LogInfo($"Attaching system of type {typeof(TSystem).FullName}.");
             var systemConstructors = typeof(TSystem).GetConstructors();

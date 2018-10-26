@@ -29,7 +29,7 @@ namespace SharperUniverse.Example.MathGame
 
             _input.NewInputEntityCreated += async (s, e) =>
             {
-                await RegisterComponentAsync(await Game.CreateEntityAsync(), e.Entity);
+                await RegisterComponentAsync(new MathGameComponent(await game.CreateEntityAsync(), e.Entity));
                 _inputEntity = e.Entity;
             };
         }

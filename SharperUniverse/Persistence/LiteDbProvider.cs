@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,9 +11,9 @@ namespace SharperUniverse.Persistence
 	{
 		public string ConnectionString { get; set; }
 
-		private List<ISharperSystem<BaseSharperComponent>> _systems;
+		private List<ISharperSystem> _systems;
 		
-		public LiteDbProvider(List<ISharperSystem<BaseSharperComponent>> systems)
+		public LiteDbProvider(List<ISharperSystem> systems)
 		{
 			_systems = systems;
 		}
@@ -23,27 +24,24 @@ namespace SharperUniverse.Persistence
 			{
 				var componentData = ComponentsToExportables(components);
 				
-				var temp = new Dictionary<SharperEntity, List<IImportable<BaseSharperComponent>>>();
+				var temp = new Dictionary<string, List<IImportable<BaseSharperComponent>>>();
 				
 				foreach (var component in components)
 				{
-					
-					var cast = component as IExportable<IImportable<BaseSharperComponent>, object>;
-
-					if (cast == null) continue;
+					if (!(component is IExportable<IImportable<BaseSharperComponent>, object> cast)) continue;
 
 					var data = cast.Export();
 					
-					if (!temp.ContainsKey(component.Entity))
+					if (!temp.ContainsKey(component.Entity.Id.ToString()))
 					{
-						temp.Add(component.Entity, new List<IImportable<BaseSharperComponent>>()
+						temp.Add(component.Entity.Id.ToString(), new List<IImportable<BaseSharperComponent>>()
 						{
 							data
 						});
 					}
 					else
 					{
-						temp[component.Entity].Add(data);
+						temp[component.Entity.Id.ToString()].Add(data);
 					}
 				}
 				
@@ -63,13 +61,14 @@ namespace SharperUniverse.Persistence
 			using (var db = new LiteDatabase(ConnectionString))
 			{
 				var temp = db.GetCollection<SharperSaveModel>("saves").FindById(index);
-				foreach (KeyValuePair<SharperEntity, List<IImportable<BaseSharperComponent>>> pair in temp.Data)
+				foreach (KeyValuePair<string, List<IImportable<BaseSharperComponent>>> pair in temp.Data)
 				{
+					var entity = new SharperEntity();
 					foreach (var component in pair.Value)
 					{
-						var system = _systems.Find(x => x.GetType().GetGenericArguments().First() == component.SystemType);
+						var system = _systems.Find(x => x.GetType().FullName == component.SystemType);
 						if (system == null) continue; //TODO throw here
-						await system.RegisterComponentAsync(component.Import(pair.Key));
+						await system.RegisterComponentAsync(component.Import(entity));
 					}
 				}
 			}
@@ -80,7 +79,7 @@ namespace SharperUniverse.Persistence
 			using (var db = new LiteDatabase(ConnectionString))
 			{
 
-				var temp = new Dictionary<SharperEntity, List<IImportable<BaseSharperComponent>>>();
+				var temp = new Dictionary<string, List<IImportable<BaseSharperComponent>>>();
 				
 				foreach (var component in components)
 				{
@@ -91,16 +90,16 @@ namespace SharperUniverse.Persistence
 
 					var data = cast.Export();
 					
-					if (!temp.ContainsKey(component.Entity))
+					if (!temp.ContainsKey(component.Entity.Id.ToString()))
 					{
-						temp.Add(component.Entity, new List<IImportable<BaseSharperComponent>>()
+						temp.Add(component.Entity.Id.ToString(), new List<IImportable<BaseSharperComponent>>()
 						{
 							data
 						});
 					}
 					else
 					{
-						temp[component.Entity].Add(data);
+						temp[component.Entity.Id.ToString()].Add(data);
 					}
 				}
 				

@@ -8,9 +8,9 @@ namespace SharperUniverse.Persistence
 	{
 		internal IDatabaseProvider _provider;
 
-		public PersistenceManager(Type provider, string connectionString)
+		public PersistenceManager(Type provider, string connectionString, List<ISharperSystem> systems)
 		{
-			_provider = (IDatabaseProvider)Activator.CreateInstance(provider);
+			_provider = (IDatabaseProvider)Activator.CreateInstance(provider, systems);
 			_provider.ConnectionString = connectionString;
 		}
 

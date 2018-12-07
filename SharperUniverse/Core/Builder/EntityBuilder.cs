@@ -12,6 +12,7 @@ namespace SharperUniverse.Core.Builder
     {
         private readonly GameRunner _game;
         private readonly List<SharperEntity> _entities;
+        private SharperEntity _currentEntity;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityBuilder"/> class.
@@ -31,7 +32,8 @@ namespace SharperUniverse.Core.Builder
         public EntityBuilder AddEntity()
         {
             ServerLog.LogInfo("Creating new SharperEntity...");
-            _entities.Add(new SharperEntity());
+            _currentEntity = new SharperEntity();
+            _entities.Add(_currentEntity);
             return this;
         }
 
@@ -54,7 +56,13 @@ namespace SharperUniverse.Core.Builder
                 // If we're calling this, we're always going to attach it to the most recently created entity (from the builder pattern)
                 // It's possible we could maybe improve this by forcing it to always follow the creation of an entity
                 // TODO: Possible refactor
-                var result = (T)Activator.CreateInstance(typeof(T), args);
+                var newArgsList = new List<object>();
+                newArgsList.Add(_currentEntity);
+                foreach (var arg in args)
+                {
+                    newArgsList.Add(arg);
+                }
+                var result = (T)Activator.CreateInstance(typeof(T), newArgsList.ToArray());
                 system.RegisterComponentAsync(result).GetAwaiter().GetResult();
 
                 break;

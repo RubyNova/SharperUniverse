@@ -180,6 +180,43 @@ namespace SharperUniverse.Tests
 			Assert.IsTrue(barSystem.EntityHasComponent(barComponentA, entity));
 			Assert.IsTrue(barSystem.EntityHasComponent(barComponentB, entity));
 		}
+
+		[Test]
+		public async Task CanLoadPartialState()
+		{
+			var runner = Substitute.For<IGameRunner>();
+	
+			var fooSystem = new FooExportSystem(runner);
+
+			runner.CreateEntityAsync().Returns(Task.FromResult(new SharperEntity()));
+			
+			var entity = await runner.CreateEntityAsync();
+
+			
+			var fooComponent = new FooExportableComponent(entity);
+
+			await fooSystem.RegisterComponentAsync(fooComponent);
+
+			var provider =
+				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner)
+				{
+					ConnectionString = $"{Path.GetTempPath()}/SU.db"
+				};
+
+
+			var id = provider.Save(new List<BaseSharperComponent>
+			{
+				fooComponent
+			});
+
+			Assert.DoesNotThrowAsync(async () =>
+			{
+				await provider.PartialLoad(id, new List<string>()
+				{
+					fooComponent.Entity.Id.ToString()
+				}, true);
+			});
+		}
 		
 	}
 }

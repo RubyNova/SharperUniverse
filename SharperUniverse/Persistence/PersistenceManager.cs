@@ -6,11 +6,11 @@ namespace SharperUniverse.Persistence
 {
 	public class PersistenceManager
 	{
-		internal IDatabaseProvider _provider;
+		private IDatabaseProvider _provider;
 
-		public PersistenceManager(Type provider, string connectionString, List<ISharperSystem> systems)
+		public PersistenceManager(Type provider, string connectionString, List<ISharperSystem> systems, IGameRunner runner)
 		{
-			_provider = (IDatabaseProvider)Activator.CreateInstance(provider, systems);
+			_provider = (IDatabaseProvider)Activator.CreateInstance(provider, systems, runner);
 			_provider.ConnectionString = connectionString;
 		}
 

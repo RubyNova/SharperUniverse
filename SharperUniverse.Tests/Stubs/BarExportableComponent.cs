@@ -34,6 +34,6 @@ namespace SharperUniverse.Tests.Stubs
 			return new BarExportableComponent(entity);
 		}
 
-		public string SystemType { get; set; } = typeof(BarSystem).FullName;
+		public string SystemType { get; set; } = typeof(BarExportSystem).FullName;
 	}
 }

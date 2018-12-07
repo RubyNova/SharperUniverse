@@ -89,7 +89,17 @@ namespace SharperUniverse.Core
             return Task.FromResult(Components.Any(x => x.Entity == entity));
         }
 
-        /// <summary>
+	    public bool EntityHasComponent(T component, SharperEntity entity)
+	    {
+		    return Components.Find(c => c == component).Entity == entity;
+	    }
+
+	    public bool EntityHasComponent(BaseSharperComponent component, SharperEntity entity)
+	    {
+		    return Components.Find(c => c == component).Entity == entity;
+	    }
+
+	    /// <summary>
         /// Destroys a component of the type the system manages.
         /// </summary>
         /// <param name="component">The component to remove from the game.</param>

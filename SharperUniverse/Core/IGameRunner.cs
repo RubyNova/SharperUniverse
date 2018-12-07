@@ -21,7 +21,13 @@ namespace SharperUniverse.Core
         /// <summary>
         /// Launches the Game. This task runs for as long as the game is running.
         /// </summary>
-        /// <returns>A <see cref="Task"/> represnting the asynchronous game loop.</returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous game loop.</returns>
         Task RunGameAsync();
+
+	    /// <summary>
+	    /// Flushes all entities from systems in preparation for load.
+	    /// </summary>
+	    /// <returns>A <see cref="Task"/> when flushing is done.</returns>
+	    Task FlushEntitesAsync();
     }
 }

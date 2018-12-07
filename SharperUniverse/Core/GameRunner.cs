@@ -18,7 +18,7 @@ namespace SharperUniverse.Core
         internal List<SharperEntity> Entities { get; set; }
         internal ISharperServer Server { get; set; }
         internal int DeltaMs { get; set; }
-	    internal PersistenceManager PeristenceManager { get; set; }
+	    internal PersistenceManager PersistenceManager { get; set; }
 
         private readonly CancellationTokenSource _cancellationTokenSource;
 
@@ -82,5 +82,13 @@ namespace SharperUniverse.Core
                 await Task.Delay(DeltaMs);
             }
         }
+
+	    public async Task FlushEntitesAsync()
+	    {
+		    foreach (var entity in Entities)
+		    {
+			    entity.ShouldDestroy = true;
+		    }
+	    }
     }
 }

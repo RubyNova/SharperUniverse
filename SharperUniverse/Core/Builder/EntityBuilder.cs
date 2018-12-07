@@ -65,10 +65,6 @@ namespace SharperUniverse.Core.Builder
                 var result = (T)Activator.CreateInstance(typeof(T), newArgsList.ToArray());
                 system.RegisterComponentAsync(result).GetAwaiter().GetResult();
 
-	            var component = Activator.CreateInstance(typeof(T), _entities.Last(), args);
-	            
-                system.RegisterComponentAsync((BaseSharperComponent)component).GetAwaiter().GetResult();
-
                 break;
             }
 

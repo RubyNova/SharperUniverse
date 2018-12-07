@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using LiteDB;
 using SharperUniverse.Core;
@@ -69,6 +70,29 @@ namespace SharperUniverse.Persistence
 				{
 					var entity = new SharperEntity();
 					foreach (var component in pair.Value)
+					{
+						var system = _systems.Find(x => x.GetType().FullName == component.SystemType);
+						if (system == null) throw new InvalidSaveStateException($"Cannot find System {component.SystemType}");
+						await system.RegisterComponentAsync(component.Import(entity));
+					}
+				}
+			}
+		}
+
+		public async Task PartialLoad(int index, IEnumerable<string> IDs, bool overwrite = false)
+		{
+			using (var db = new LiteDatabase(ConnectionString))
+			{
+
+				if(overwrite) await _runner.FlushEntitesAsync();
+				
+				var temp = db.GetCollection<SharperSaveModel>("saves").FindById(index);
+
+				foreach (var id in IDs)
+				{
+					if(!temp.Data.ContainsKey(id)) throw new InvalidSaveStateException($"The ID {id} does not exist in the save file.");
+					var entity = new SharperEntity();
+					foreach (var component in temp.Data[id])
 					{
 						var system = _systems.Find(x => x.GetType().FullName == component.SystemType);
 						if (system == null) throw new InvalidSaveStateException($"Cannot find System {component.SystemType}");

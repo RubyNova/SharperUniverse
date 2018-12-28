@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SharperUniverse.Core;
 
 namespace SharperUniverse.Persistence
@@ -14,7 +15,7 @@ namespace SharperUniverse.Persistence
 			_provider.ConnectionString = connectionString;
 		}
 
-		public int Save(List<BaseSharperComponent> components)
+		public Task<int> Save(List<BaseSharperComponent> components)
 		{
 			return _provider.Save(components);
 		}

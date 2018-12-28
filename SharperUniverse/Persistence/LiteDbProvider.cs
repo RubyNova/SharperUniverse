@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace SharperUniverse.Persistence
 {
 	public class LiteDbProvider : IDatabaseProvider
 	{
-		public string ConnectionString { get; set; }
+		public string ConnectionString { get; set; } = $"{Path.GetTempPath()}/SU.db";
 
 		private List<ISharperSystem> _systems;
 		private IGameRunner _runner;
@@ -21,7 +22,7 @@ namespace SharperUniverse.Persistence
 			_runner = runner;
 		}
 		
-		public int Save(List<BaseSharperComponent> components)
+		public async Task<int> Save(List<BaseSharperComponent> components)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{
@@ -102,7 +103,7 @@ namespace SharperUniverse.Persistence
 			}
 		}
 
-		public void Modify(int index, List<BaseSharperComponent> components)
+		public async Task Modify(int index, List<BaseSharperComponent> components)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{
@@ -136,7 +137,7 @@ namespace SharperUniverse.Persistence
 			}
 		}
 
-		public void Delete(int index)
+		public async Task Delete(int index)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{

@@ -37,6 +37,6 @@ namespace SharperUniverse.Core
 
 	    Task<bool> EntityHasComponentOfManagingTypeAsync(SharperEntity entity);
 	    
-	    bool EntityHasComponent(BaseSharperComponent component, SharperEntity entity);
+	    Task<bool> EntityHasComponent(BaseSharperComponent component, SharperEntity entity);
     }
 }

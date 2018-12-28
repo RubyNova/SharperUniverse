@@ -6,13 +6,10 @@ namespace SharperUniverse.Tests.Stubs
 {
 	public class BarExportableComponent : BaseSharperComponent, IExportable<BarModel, BarExportableComponent>
 	{
-
-		private SharperEntity _entity;
 		public string Foo { get; set; }
 		
 		public BarExportableComponent(SharperEntity entity) : base(entity)
 		{
-			_entity = entity;
 			Foo = "foo";
 		}
 		
@@ -34,6 +31,6 @@ namespace SharperUniverse.Tests.Stubs
 			return new BarExportableComponent(entity);
 		}
 
-		public string SystemType { get; set; } = typeof(BarExportSystem).FullName;
+		public string SystemType => typeof(BarExportSystem).FullName;
 	}
 }

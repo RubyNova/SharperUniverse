@@ -36,13 +36,9 @@ namespace SharperUniverse.Tests
 			await barSystem.RegisterComponentAsync(barComponent);
 
 			var provider =
-				new LiteDbProvider(new List<ISharperSystem> {fooSystem, barSystem}, runner)
-				{
-					ConnectionString = $"{Path.GetTempPath()}/SU.db"
-				};
+				new LiteDbProvider(new List<ISharperSystem> {fooSystem, barSystem}, runner);
 
-
-			var id = provider.Save(new List<BaseSharperComponent>
+			var id = await provider.Save(new List<BaseSharperComponent>
 			{
 				fooComponent,
 				barComponent
@@ -82,10 +78,7 @@ namespace SharperUniverse.Tests
 			}
 
 			var provider =
-				new LiteDbProvider(new List<ISharperSystem> {fooSystem, barSystem}, runner)
-				{
-					ConnectionString = $"{Path.GetTempPath()}/SU.db"
-				};
+				new LiteDbProvider(new List<ISharperSystem> {fooSystem, barSystem}, runner);
 
 
 			GC.Collect();
@@ -93,7 +86,7 @@ namespace SharperUniverse.Tests
 			
 			for (var i = 0; i < 20; i++)
 			{
-				var id = provider.Save(components);
+				var id = await provider.Save(components);
 
 				await provider.Load(id);
 			}
@@ -120,14 +113,11 @@ namespace SharperUniverse.Tests
 
 			await fooSystem.RegisterComponentAsync(fooComponent);
 			await barSystem.RegisterComponentAsync(barComponent);
-			
-			var provider =
-				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner)
-				{
-					ConnectionString = $"{Path.GetTempPath()}/SU.db"
-				};
 
-			var id = provider.Save(new List<BaseSharperComponent>()
+			var provider =
+				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner);
+
+			var id = await provider.Save(new List<BaseSharperComponent>()
 			{
 				fooComponent,
 				barComponent
@@ -158,14 +148,11 @@ namespace SharperUniverse.Tests
 			await barSystem.RegisterComponentAsync(barComponentA);
 			await fooSystem.RegisterComponentAsync(fooComponentB);
 			await barSystem.RegisterComponentAsync(barComponentB);
-			
-			var provider =
-				new LiteDbProvider(new List<ISharperSystem> {fooSystem,barSystem}, runner)
-				{
-					ConnectionString = $"{Path.GetTempPath()}/SU.db"
-				};
 
-			var id = provider.Save(new List<BaseSharperComponent>()
+			var provider =
+				new LiteDbProvider(new List<ISharperSystem> {fooSystem, barSystem}, runner);
+
+			var id = await provider.Save(new List<BaseSharperComponent>()
 			{
 				fooComponentA,
 				barComponentA,
@@ -198,13 +185,10 @@ namespace SharperUniverse.Tests
 			await fooSystem.RegisterComponentAsync(fooComponent);
 
 			var provider =
-				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner)
-				{
-					ConnectionString = $"{Path.GetTempPath()}/SU.db"
-				};
+				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner);
 
 
-			var id = provider.Save(new List<BaseSharperComponent>
+			var id = await provider.Save(new List<BaseSharperComponent>
 			{
 				fooComponent
 			});
@@ -217,6 +201,5 @@ namespace SharperUniverse.Tests
 				}, true);
 			});
 		}
-		
 	}
 }

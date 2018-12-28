@@ -6,11 +6,11 @@ namespace SharperUniverse.Persistence
 {
 	public interface IDatabaseProvider
 	{
-		int Save(List<BaseSharperComponent> components);
+		Task<int> Save(List<BaseSharperComponent> components);
 		Task Load(int index);
-		void Modify(int index, List<BaseSharperComponent> components);
-		void Delete(int index);
+		Task Modify(int index, List<BaseSharperComponent> components);
+		Task Delete(int index);
 		
-		string ConnectionString { get; set; }
+		string ConnectionString { set; }
 	}
 }

@@ -7,7 +7,16 @@ namespace SharperUniverse.Core
     /// </summary>
     public sealed class SharperEntity
     {
-        public bool ShouldDestroy { get; set; }
-	    public Guid Id { get; } = Guid.NewGuid();
+
+	    private Guid _id;
+	    
+	    public bool ShouldDestroy { get; set; }
+	    public Guid Id => _id;
+	    
+	    public SharperEntity()
+	    {
+		    _id = Guid.NewGuid();
+	    }
+	    
     }
 }

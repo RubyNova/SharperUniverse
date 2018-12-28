@@ -20,19 +20,19 @@ namespace SharperUniverse.Persistence
 			return _provider.Save(components);
 		}
 
-		public void Load(int saveIndex)
+		public Task Load(int saveIndex)
 		{
-			_provider.Load(saveIndex);
+			return _provider.Load(saveIndex);
 		}
 
-		public void Modify(int saveIndex, List<BaseSharperComponent> components)
+		public Task Modify(int saveIndex, List<BaseSharperComponent> components)
 		{
-			_provider.Modify(saveIndex, components);
+			return _provider.Modify(saveIndex, components);
 		}
 
-		public void Delete(int saveIndex)
+		public Task Delete(int saveIndex)
 		{
-			_provider.Delete(saveIndex);
+			return _provider.Delete(saveIndex);
 		}
 	}
 }

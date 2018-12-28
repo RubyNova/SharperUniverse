@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using LiteDB;
 using SharperUniverse.Core;
@@ -22,7 +19,7 @@ namespace SharperUniverse.Persistence
 			_runner = runner;
 		}
 		
-		public async Task<int> Save(List<BaseSharperComponent> components)
+		public async Task<int> SaveAsync(List<BaseSharperComponent> components)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{
@@ -59,7 +56,7 @@ namespace SharperUniverse.Persistence
 			}
 		}
 
-		public async Task Load(int index)
+		public async Task LoadAsync(int index)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{
@@ -80,7 +77,7 @@ namespace SharperUniverse.Persistence
 			}
 		}
 
-		public async Task PartialLoad(int index, IEnumerable<string> IDs, bool overwrite = false)
+		public async Task PartialLoadAsync(int index, IEnumerable<string> IDs, bool overwrite = false)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{
@@ -103,7 +100,7 @@ namespace SharperUniverse.Persistence
 			}
 		}
 
-		public async Task Modify(int index, List<BaseSharperComponent> components)
+		public async Task ModifyAsync(int index, List<BaseSharperComponent> components)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{
@@ -137,7 +134,7 @@ namespace SharperUniverse.Persistence
 			}
 		}
 
-		public async Task Delete(int index)
+		public async Task DeleteAsync(int index)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{

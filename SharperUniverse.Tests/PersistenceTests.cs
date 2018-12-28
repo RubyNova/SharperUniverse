@@ -1,18 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
-using LiteDB;
 using NSubstitute;
 using NUnit.Framework;
 using SharperUniverse.Core;
-using SharperUniverse.Networking;
-using SharperUniverse.Networking.EventArguments;
 using SharperUniverse.Persistence;
 using SharperUniverse.Tests.Stubs;
 
@@ -42,13 +34,13 @@ namespace SharperUniverse.Tests
 			var provider =
 				new LiteDbProvider(new List<ISharperSystem> {fooSystem, barSystem}, runner);
 
-			var id = await provider.Save(new List<BaseSharperComponent>
+			var id = await provider.SaveAsync(new List<BaseSharperComponent>
 			{
 				fooComponent,
 				barComponent
 			});
 
-			await provider.Load(id);
+			await provider.LoadAsync(id);
 
 			var barComponents = barSystem.GetComponents();
 			var fooComponents = fooSystem.GetComponents();
@@ -90,9 +82,9 @@ namespace SharperUniverse.Tests
 			
 			for (var i = 0; i < 20; i++)
 			{
-				var id = await provider.Save(components);
+				var id = await provider.SaveAsync(components);
 
-				await provider.Load(id);
+				await provider.LoadAsync(id);
 			}
 
 			GC.Collect();
@@ -121,13 +113,13 @@ namespace SharperUniverse.Tests
 			var provider =
 				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner);
 
-			var id = await provider.Save(new List<BaseSharperComponent>()
+			var id = await provider.SaveAsync(new List<BaseSharperComponent>()
 			{
 				fooComponent,
 				barComponent
 			});
 
-			Assert.ThrowsAsync<InvalidSaveStateException>(() => provider.Load(id));
+			Assert.ThrowsAsync<InvalidSaveStateException>(() => provider.LoadAsync(id));
 
 		}
 
@@ -156,7 +148,7 @@ namespace SharperUniverse.Tests
 			var provider =
 				new LiteDbProvider(new List<ISharperSystem> {fooSystem, barSystem}, runner);
 
-			var id = await provider.Save(new List<BaseSharperComponent>()
+			var id = await provider.SaveAsync(new List<BaseSharperComponent>()
 			{
 				fooComponentA,
 				barComponentA,
@@ -164,7 +156,7 @@ namespace SharperUniverse.Tests
 				barComponentB
 			});
 
-			await provider.Load(id);
+			await provider.LoadAsync(id);
 
 			Assert.IsTrue(fooSystem.EntityHasComponent(fooComponentA, entity));
 			Assert.IsTrue(fooSystem.EntityHasComponent(fooComponentB, entity));
@@ -192,14 +184,14 @@ namespace SharperUniverse.Tests
 				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner);
 
 
-			var id = await provider.Save(new List<BaseSharperComponent>
+			var id = await provider.SaveAsync(new List<BaseSharperComponent>()
 			{
 				fooComponent
 			});
 
 			Assert.DoesNotThrowAsync(async () =>
 			{
-				await provider.PartialLoad(id, new List<string>()
+				await provider.PartialLoadAsync(id, new List<string>()
 				{
 					fooComponent.Entity.Id.ToString()
 				}, true);
@@ -231,7 +223,7 @@ namespace SharperUniverse.Tests
 
 			fooComponent.Foo = "foo";
 			
-			var id = await provider.Save(new List<BaseSharperComponent>
+			var id = await provider.SaveAsync(new List<BaseSharperComponent>
 			{
 				fooComponent
 			});
@@ -240,7 +232,7 @@ namespace SharperUniverse.Tests
 			
 			Assert.DoesNotThrowAsync(async () =>
 			{
-				await provider.Modify(id, new List<BaseSharperComponent>
+				await provider.ModifyAsync(id, new List<BaseSharperComponent>
 				{
 					fooComponent,
 					barComponent
@@ -270,14 +262,14 @@ namespace SharperUniverse.Tests
 				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner);
 
 
-			var id = await provider.Save(new List<BaseSharperComponent>
+			var id = await provider.SaveAsync(new List<BaseSharperComponent>
 			{
 				fooComponent
 			});
 
 			Assert.DoesNotThrowAsync(async () =>
 			{
-				await provider.PartialLoad(id, new List<string>()
+				await provider.PartialLoadAsync(id, new List<string>()
 				{
 					fooComponent.Entity.Id.ToString()
 				}, true);

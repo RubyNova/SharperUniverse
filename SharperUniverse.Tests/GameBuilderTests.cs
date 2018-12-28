@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using SharperUniverse.Core;
 using SharperUniverse.Core.Builder;
 using SharperUniverse.Persistence;
 using SharperUniverse.Tests.Stubs;

@@ -24,27 +24,27 @@ namespace SharperUniverse.Persistence
 
 
 		///<see cref="IDatabaseProvider.Save(List{SharperUniverse.Core.BaseSharperComponent})"/>
-		public Task<int> Save(List<BaseSharperComponent> components)
+		public Task<int> SaveAsync(List<BaseSharperComponent> components)
 		{
-			return _provider.Save(components);
+			return _provider.SaveAsync(components);
 		}
 
 		///<see cref="IDatabaseProvider.Load(int)"/>
-		public Task Load(int saveIndex)
+		public Task LoadAsync(int saveIndex)
 		{
-			return _provider.Load(saveIndex);
+			return _provider.LoadAsync(saveIndex);
 		}
 		
 		///<see cref="IDatabaseProvider.Modify(int, List{BaseSharperComponent})"/>
-		public Task Modify(int saveIndex, List<BaseSharperComponent> components)
+		public Task ModifyAsync(int saveIndex, List<BaseSharperComponent> components)
 		{
-			return _provider.Modify(saveIndex, components);
+			return _provider.ModifyAsync(saveIndex, components);
 		}
 
 		///<see cref="IDatabaseProvider.Delete(int)"/>
-		public Task Delete(int saveIndex)
+		public Task DeleteAsync(int saveIndex)
 		{
-			return _provider.Delete(saveIndex);
+			return _provider.DeleteAsync(saveIndex);
 		}
 	}
 }

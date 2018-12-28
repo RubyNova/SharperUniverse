@@ -1,4 +1,3 @@
-using System;
 using SharperUniverse.Core;
 
 namespace SharperUniverse.Persistence

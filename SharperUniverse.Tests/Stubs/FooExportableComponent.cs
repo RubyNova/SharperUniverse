@@ -1,4 +1,3 @@
-using System;
 using SharperUniverse.Core;
 using SharperUniverse.Persistence;
 
@@ -24,14 +23,17 @@ namespace SharperUniverse.Tests.Stubs
 	{
 		
 		public string Foo { get; set; }
-		
-		public FooModel(){}
+
+		public FooModel()
+		{
+			SystemType = typeof(FooExportSystem).FullName;
+		}
 		
 		public FooExportableComponent Import(SharperEntity entity)
 		{
 			return new FooExportableComponent(entity);
 		}
 
-		public string SystemType => typeof(FooExportSystem).FullName;
+		public string SystemType { get; }
 	}
 }

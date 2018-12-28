@@ -89,14 +89,14 @@ namespace SharperUniverse.Core
             return Task.FromResult(Components.Any(x => x.Entity == entity));
         }
 
-	    public Task<bool> EntityHasComponentAsync(T component, SharperEntity entity)
+	    public bool EntityHasComponent(T component, SharperEntity entity)
 	    {
-		    return  Task.FromResult(Components.Find(c => c == component).Entity == entity);
+		    return Components.Find(c => c == component).Entity == entity;
 	    }
 
-	    public Task<bool> EntityHasComponentAsync(BaseSharperComponent component, SharperEntity entity)
+	    public bool EntityHasComponent(BaseSharperComponent component, SharperEntity entity)
 	    {
-		    return  Task.FromResult(Components.Find(c => c == component).Entity == entity);
+		    return Components.Find(c => c == component).Entity == entity;
 	    }
 
 	    /// <summary>

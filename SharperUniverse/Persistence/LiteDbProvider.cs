@@ -77,7 +77,7 @@ namespace SharperUniverse.Persistence
 			}
 		}
 
-		public async Task PartialLoadAsync(int index, IEnumerable<string> IDs, bool overwrite = false)
+		public async Task LoadPartialStateAsync(int index, IEnumerable<string> IDs, bool overwrite = false)
 		{
 			using (var db = new LiteDatabase(ConnectionString))
 			{

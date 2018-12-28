@@ -191,7 +191,7 @@ namespace SharperUniverse.Tests
 
 			Assert.DoesNotThrowAsync(async () =>
 			{
-				await provider.PartialLoadAsync(id, new List<string>()
+				await provider.LoadPartialStateAsync(id, new List<string>()
 				{
 					fooComponent.Entity.Id.ToString()
 				}, true);
@@ -269,7 +269,7 @@ namespace SharperUniverse.Tests
 
 			Assert.DoesNotThrowAsync(async () =>
 			{
-				await provider.PartialLoadAsync(id, new List<string>()
+				await provider.LoadPartialStateAsync(id, new List<string>()
 				{
 					fooComponent.Entity.Id.ToString()
 				}, true);

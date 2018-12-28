@@ -37,6 +37,15 @@ namespace SharperUniverse.Persistence
 		/// <param name="index">The index of the save state you want to delete.</param>
 		/// <returns>A <see cref="Task"/></returns>
 		Task DeleteAsync(int index);
+
+		/// <summary>
+		/// Loads a partial state from the database.
+		/// </summary>
+		/// <param name="index">The index of the save to load</param>
+		/// <param name="IDs">All IDs you want to load.</param>
+		/// <param name="overwrite">If it should flush. Defaults to false.</param>
+		/// <returns></returns>
+		Task LoadPartialStateAsync(int index, IEnumerable<string> IDs, bool overwrite);
 		
 		/// <summary>
 		/// The string used for connecting to the database.

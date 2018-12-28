@@ -7,12 +7,10 @@ namespace SharperUniverse.Tests.Stubs
 	public class FooExportableComponent : BaseSharperComponent, IExportable<FooModel, FooExportableComponent>
 	{
 
-		private SharperEntity _entity;
 		public string Foo { get; set; }
 		
 		public FooExportableComponent(SharperEntity entity) : base(entity)
 		{
-			_entity = entity;
 			Foo = "foo";
 		}
 		

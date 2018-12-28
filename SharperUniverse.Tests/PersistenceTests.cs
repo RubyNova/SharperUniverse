@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using LiteDB;
 using NSubstitute;
 using NUnit.Framework;
 using SharperUniverse.Core;
+using SharperUniverse.Networking;
+using SharperUniverse.Networking.EventArguments;
 using SharperUniverse.Persistence;
 using SharperUniverse.Tests.Stubs;
 
@@ -184,6 +188,84 @@ namespace SharperUniverse.Tests
 
 			await fooSystem.RegisterComponentAsync(fooComponent);
 
+			var provider =
+				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner);
+
+
+			var id = await provider.Save(new List<BaseSharperComponent>
+			{
+				fooComponent
+			});
+
+			Assert.DoesNotThrowAsync(async () =>
+			{
+				await provider.PartialLoad(id, new List<string>()
+				{
+					fooComponent.Entity.Id.ToString()
+				}, true);
+			});
+		}
+
+		[Test]
+		public async Task CanSavePartialState()
+		{
+			var runner = Substitute.For<IGameRunner>();
+	
+			var fooSystem = new FooExportSystem(runner);
+
+			runner.CreateEntityAsync().Returns(Task.FromResult(new SharperEntity()));
+			
+			var entity = await runner.CreateEntityAsync();
+
+			
+			var fooComponent = new FooExportableComponent(entity);
+
+			var barComponent = new BarExportableComponent(entity);
+			var barSystem = new BarExportSystem(runner);
+
+			await barSystem.RegisterComponentAsync(barComponent);
+			await fooSystem.RegisterComponentAsync(fooComponent);
+			
+			var provider =
+				new LiteDbProvider(new List<ISharperSystem> {fooSystem, barSystem}, runner);
+
+			fooComponent.Foo = "foo";
+			
+			var id = await provider.Save(new List<BaseSharperComponent>
+			{
+				fooComponent
+			});
+
+			fooComponent.Foo = "bar";
+			
+			Assert.DoesNotThrowAsync(async () =>
+			{
+				await provider.Modify(id, new List<BaseSharperComponent>
+				{
+					fooComponent,
+					barComponent
+				});
+			});
+			
+			Assert.AreEqual(fooSystem.GetComponents().First().Foo, "bar");
+			
+		}
+		
+		[Test]
+		public async Task CanLoadMultiplePartialState()
+		{
+			var runner = Substitute.For<IGameRunner>();
+	
+			var fooSystem = new FooExportSystem(runner);
+
+			runner.CreateEntityAsync().Returns(Task.FromResult(new SharperEntity()));
+			
+			var entity = await runner.CreateEntityAsync();
+			
+			var fooComponent = new FooExportableComponent(entity);
+			
+			await fooSystem.RegisterComponentAsync(fooComponent);
+			
 			var provider =
 				new LiteDbProvider(new List<ISharperSystem> {fooSystem}, runner);
 

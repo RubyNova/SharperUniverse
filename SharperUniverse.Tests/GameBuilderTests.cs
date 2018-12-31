@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using NSubstitute;
 using NUnit.Framework;
-using SharperUniverse.Core;
 using SharperUniverse.Core.Builder;
-using SharperUniverse.Networking;
+using SharperUniverse.Persistence;
 using SharperUniverse.Tests.Stubs;
 
 namespace SharperUniverse.Tests
@@ -130,6 +127,8 @@ namespace SharperUniverse.Tests
                 .ComposeEntities()
                 .SetupNetwork()
                 .DefaultServer(4000)
+	            .WithPersistence<LiteDbProvider>()
+	            .WithConnectionString($"{Path.GetTempPath()}\\SU_test.db")
                 .Build();
 
             _runQuickGame(builder);

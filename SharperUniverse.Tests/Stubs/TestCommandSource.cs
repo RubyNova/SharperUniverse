@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SharperUniverse.Core;
-using SharperUniverse.Networking;
+﻿using SharperUniverse.Networking;
 
 namespace SharperUniverse.Tests
 {

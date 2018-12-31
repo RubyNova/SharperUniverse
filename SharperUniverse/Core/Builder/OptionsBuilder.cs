@@ -1,4 +1,5 @@
 ﻿using SharperUniverse.Logging;
+using SharperUniverse.Persistence;
 
 namespace SharperUniverse.Core.Builder
 {
@@ -31,6 +32,11 @@ namespace SharperUniverse.Core.Builder
             _game.DeltaMs = ms;
             return this;
         }
+	    
+	    public PersistenceBuilder WithPersistence<T>() where T : IDatabaseProvider
+	    {
+		    return new PersistenceBuilder(_game, typeof(T));
+	    }
 
         /// <summary>
         /// Signals that all composition of a <see cref="GameRunner"/> is complete, and allows the exeuction of the Sharper Universe.

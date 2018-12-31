@@ -17,7 +17,13 @@ namespace SharperUniverse.Core
 
         Task RegisterComponentAsync(T component);
 
+	    Task RegisterComponentsAsync(params BaseSharperComponent[] components);
+
         Task UnregisterAllComponentsByEntityAsync(SharperEntity entity);
+
+	    bool EntityHasComponentOfManagingType(SharperEntity entity);
+	    
+	    bool EntityHasComponent(T component, SharperEntity entity);
     }
 
     public interface ISharperSystem
@@ -27,5 +33,9 @@ namespace SharperUniverse.Core
         Task RegisterComponentAsync(BaseSharperComponent component);
 
         Task UnregisterAllComponentsByEntityAsync(SharperEntity entity);
+
+	    bool EntityHasComponentOfManagingType(SharperEntity entity);
+	    
+	    bool EntityHasComponent(BaseSharperComponent component, SharperEntity entity);
     }
 }

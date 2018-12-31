@@ -74,12 +74,32 @@ namespace SharperUniverse.Core
             return Task.CompletedTask;
         }
 
-        public Task<bool> EntityHasComponentOfManagingTypeAsync(SharperEntity entity)
+	    public Task RegisterComponentsAsync(params BaseSharperComponent[] components)
+	    {
+		    foreach (var component in components)
+		    {
+				Components.Add((T)component);
+			    ComponentRegistered?.Invoke(this, new SharperComponentEventArgs(component));   
+		    }
+		    return Task.CompletedTask;
+	    }
+
+        public bool EntityHasComponentOfManagingType(SharperEntity entity)
         {
-            return Task.FromResult(Components.Any(x => x.Entity == entity));
+            return Components.Any(x => x.Entity == entity);
         }
 
-        /// <summary>
+	    public bool EntityHasComponent(T component, SharperEntity entity)
+	    {
+		    return Components.Find(c => c == component).Entity == entity;
+	    }
+
+	    public bool EntityHasComponent(BaseSharperComponent component, SharperEntity entity)
+	    {
+		    return Components.Find(c => c == component).Entity == entity;
+	    }
+
+	    /// <summary>
         /// Destroys a component of the type the system manages.
         /// </summary>
         /// <param name="component">The component to remove from the game.</param>

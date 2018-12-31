@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SharperUniverse.Logging;
 using SharperUniverse.Networking;
+using SharperUniverse.Persistence;
 
 namespace SharperUniverse.Core
 {
@@ -17,6 +17,7 @@ namespace SharperUniverse.Core
         internal List<SharperEntity> Entities { get; set; }
         internal ISharperServer Server { get; set; }
         internal int DeltaMs { get; set; }
+	    internal PersistenceManager PersistenceManager { get; set; }
 
         private readonly CancellationTokenSource _cancellationTokenSource;
 
@@ -58,7 +59,7 @@ namespace SharperUniverse.Core
         /// <summary>
         /// Launches the Game. This task runs for as long as the game is running.
         /// </summary>
-        /// <returns>A <see cref="Task"/> represnting the asynchronous game loop.</returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous game loop.</returns>
         public async Task RunGameAsync()
         {
             var inputSystem = (SharperInputSystem)Systems.First(x => x is SharperInputSystem);
@@ -80,5 +81,13 @@ namespace SharperUniverse.Core
                 await Task.Delay(DeltaMs);
             }
         }
+
+	    public async Task FlushEntitesAsync()
+	    {
+		    foreach (var entity in Entities)
+		    {
+			    entity.ShouldDestroy = true;
+		    }
+	    }
     }
 }

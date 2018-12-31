@@ -84,9 +84,9 @@ namespace SharperUniverse.Core
 		    return Task.CompletedTask;
 	    }
 
-        public Task<bool> EntityHasComponentOfManagingTypeAsync(SharperEntity entity)
+        public bool EntityHasComponentOfManagingType(SharperEntity entity)
         {
-            return Task.FromResult(Components.Any(x => x.Entity == entity));
+            return Components.Any(x => x.Entity == entity);
         }
 
 	    public bool EntityHasComponent(T component, SharperEntity entity)

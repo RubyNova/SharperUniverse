@@ -21,7 +21,7 @@ namespace SharperUniverse.Core
 
         Task UnregisterAllComponentsByEntityAsync(SharperEntity entity);
 
-	    Task<bool> EntityHasComponentOfManagingTypeAsync(SharperEntity entity);
+	    bool EntityHasComponentOfManagingType(SharperEntity entity);
 	    
 	    bool EntityHasComponent(T component, SharperEntity entity);
     }
@@ -34,7 +34,7 @@ namespace SharperUniverse.Core
 
         Task UnregisterAllComponentsByEntityAsync(SharperEntity entity);
 
-	    Task<bool> EntityHasComponentOfManagingTypeAsync(SharperEntity entity);
+	    bool EntityHasComponentOfManagingType(SharperEntity entity);
 	    
 	    bool EntityHasComponent(BaseSharperComponent component, SharperEntity entity);
     }

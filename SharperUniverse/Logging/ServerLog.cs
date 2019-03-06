@@ -1,12 +1,19 @@
-﻿using Serilog;
+﻿using System;
+using System.IO;
+using Serilog;
 
 namespace SharperUniverse.Logging
 {
     public static class ServerLog
     {
+        private static string LogFileLocation() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "SharperUniverse");
+
         static ServerLog()
         {
-            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.RollingFile(Path.Combine(LogFileLocation(), @"SharperUniverse-{HalfHour}.txt"))
+                .CreateLogger();
         }
 
         public static void LogInfo(string message)

@@ -22,6 +22,7 @@
     <PackageReference Include="LiteDB" Version="4.1.4" />
     <PackageReference Include="Serilog" Version="2.7.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
     <PackageReference Include="Telnet" Version="0.8.0" />
   </ItemGroup>
 </Project>

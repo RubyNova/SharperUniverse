@@ -10,7 +10,7 @@ namespace ExampleECSUsageConsole
         private readonly Dictionary<TestComponent, bool> _prevStates;
         private SharperInputSystem _inputSystem;
 
-        public TestSystem(GameRunner game, SharperInputSystem inputSystem) : base(game)
+        public TestSystem(IGameRunner game, SharperInputSystem inputSystem) : base(game)
         {
             _prevStates = new Dictionary<TestComponent, bool>();
             _inputSystem = inputSystem;

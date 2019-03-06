@@ -14,14 +14,14 @@ namespace SharperUniverse.Example.MathGame
         };
 
         private SharperInputSystem _input;
-        private GameRunner _game;
+        private IGameRunner _game;
         private GameState _gameState;
         private Random _random;
         private int _guess;
         private int _answer;
         private SharperEntity _inputEntity;
 
-        public MathGameSystem(GameRunner game, SharperInputSystem input) : base(game)
+        public MathGameSystem(IGameRunner game, SharperInputSystem input) : base(game)
         {
             _game = game;
             _input = input;
